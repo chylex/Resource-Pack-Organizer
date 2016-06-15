@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResourcePack;
 import net.minecraft.client.resources.ResourcePackRepository;
-import net.minecraft.client.resources.data.MetadataSerializer;
+import net.minecraft.client.resources.data.IMetadataSerializer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -51,7 +51,7 @@ public class ResourcePackRepositoryCustom extends ResourcePackRepository{
 	private List<Entry> repositoryEntries = Lists.newArrayList();
 	private boolean isReady;
 	
-	public ResourcePackRepositoryCustom(File dirResourcepacks, File dirServerResourcepacks, IResourcePack rprDefaultResourcePack, MetadataSerializer rprMetadataSerializer, GameSettings settings, List<String> enabledPacks){
+	public ResourcePackRepositoryCustom(File dirResourcepacks, File dirServerResourcepacks, IResourcePack rprDefaultResourcePack, IMetadataSerializer rprMetadataSerializer, GameSettings settings, List<String> enabledPacks){
 		super(dirResourcepacks,dirServerResourcepacks,rprDefaultResourcePack,rprMetadataSerializer,settings);
 		
 		isReady = true;
