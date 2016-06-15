@@ -1,5 +1,6 @@
 package chylex.respack.gui;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Iterator;
@@ -13,16 +14,17 @@ import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.ResourcePackListEntry;
+import net.minecraft.client.resources.ResourcePackListEntryDefault;
 import net.minecraft.client.resources.ResourcePackListEntryFound;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.client.resources.ResourcePackRepository.Entry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import chylex.respack.packs.ResourcePackListEntryFolder;
 import chylex.respack.packs.ResourcePackListProcessor;
 import chylex.respack.render.RenderPackListOverlay;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
@@ -31,8 +33,8 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	private GuiTextField searchField;
     private GuiResourcePackAvailable guiPacksAvailable;
     private GuiResourcePackSelected guiPacksSelected;
-    private List<ResourcePackListEntryFound> listPacksAvailable, listPacksAvailableProcessed, listPacksDummy;
-    private List<ResourcePackListEntryFound> listPacksSelected;
+    private List<ResourcePackListEntry> listPacksAvailable, listPacksAvailableProcessed, listPacksDummy;
+    private List<ResourcePackListEntry> listPacksSelected;
     private ResourcePackListProcessor listProcessor;
     
     private File currentFolder;
@@ -55,7 +57,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		buttonList.add(new GuiOptionButton(11,width/2-204+44,height-26,40,20,"Z-A"));
 		buttonList.add(new GuiOptionButton(20,width/2-74,height-26,70,20,"Refresh"));
 		
-		searchField = new GuiTextField(fontRendererObj,width/2-203,height-46,198,16);
+		searchField = new GuiTextField(30,fontRendererObj,width/2-203,height-46,198,16);
 
 		listPacksAvailable = Lists.newArrayListWithCapacity(8);
 		listPacksAvailableProcessed = Lists.newArrayListWithCapacity(8);
@@ -68,9 +70,11 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		currentFolder = repository.getDirResourcepacks();
 		listPacksAvailable.addAll(createAvailablePackList(repository));
         
-        for(Entry entry:(List<Entry>)Lists.reverse(repository.getRepositoryEntries())){
+        for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
         	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
         }
+        
+        listPacksSelected.add(new ResourcePackListEntryDefault(this));
 		
 		guiPacksAvailable = new GuiResourcePackAvailable(mc,200,height,listPacksAvailableProcessed);
 		guiPacksAvailable.setSlotXBoundsFromLeft(width/2-204);
@@ -119,24 +123,33 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	@Override
 	protected void mouseClicked(int mouseX, int mouseY, int buttonId){
 		if (buttonId == 0){
-			for(GuiButton button:(List<GuiButton>)buttonList){
+			for(GuiButton button:buttonList){
 				if (button.mousePressed(mc,mouseX,mouseY)){
 					selectedButton = button;
-					button.func_146113_a(mc.getSoundHandler());
+					button.playPressSound(mc.getSoundHandler());
 					actionPerformed(button);
 				}
 			}
 		}
 		
-		guiPacksAvailable.func_148179_a(mouseX,mouseY,buttonId);
-		guiPacksSelected.func_148179_a(mouseX,mouseY,buttonId);
+		guiPacksAvailable.mouseClicked(mouseX,mouseY,buttonId);
+		guiPacksSelected.mouseClicked(mouseX,mouseY,buttonId);
 		searchField.mouseClicked(mouseX,mouseY,buttonId);
 		
 		listProcessor.refresh();
 	}
 	
 	@Override
-	protected void mouseMovedOrUp(int mouseX, int mouseY, int eventType){
+	public void handleMouseInput() throws IOException{
+		try{
+			super.handleMouseInput();
+		}catch(NullPointerException e){
+			// calls super.handleMouseInput and then attempts to use selectedResourcePacksList and availableResourcePacksList which are null
+		}
+	}
+	
+	@Override
+	protected void mouseReleased(int mouseX, int mouseY, int eventType){
 		if (eventType == 0 && selectedButton != null){
 			selectedButton.mouseReleased(mouseX,mouseY);
 			selectedButton = null;
@@ -144,7 +157,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	}
 	
 	@Override
-	protected void keyTyped(char keyChar, int keyCode){
+	protected void keyTyped(char keyChar, int keyCode) throws IOException{
 		super.keyTyped(keyChar,keyCode);
 		
 		if (searchField.isFocused()){
@@ -184,15 +197,19 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	public List<Entry> refreshSelectedPacks(){
 		List<Entry> selected = Lists.newArrayListWithCapacity(listPacksSelected.size());
 		
-		for(ResourcePackListEntryFound entry:listPacksSelected){
-			if (entry.func_148318_i() != null){
-				selected.add(entry.func_148318_i());
+		for(ResourcePackListEntry entry:listPacksSelected){
+			if (!(entry instanceof ResourcePackListEntryFound))continue;
+			
+			ResourcePackListEntryFound packEntry = (ResourcePackListEntryFound)entry;
+			
+			if (packEntry.func_148318_i() != null){
+				selected.add(packEntry.func_148318_i());
 			}
 		}
 		
 		Collections.reverse(selected);
 		
-		mc.getResourcePackRepository().func_148527_a(selected);
+		mc.getResourcePackRepository().setRepositories(selected);
 		return selected;
 	}
 	
@@ -203,7 +220,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		guiPacksSelected.drawScreen(mouseX,mouseY,partialTickTime);
 		searchField.drawTextBox();
 		
-		for(GuiButton button:(List<GuiButton>)buttonList){
+		for(GuiButton button:buttonList){
 			button.drawButton(mc,mouseX,mouseY);
 		}
 	}
@@ -253,24 +270,24 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	// OVERRIDES FROM GuiScreenResourcePacks
 	
 	@Override
-	public boolean func_146961_a(ResourcePackListEntry entry){
+	public boolean hasResourcePackEntry(ResourcePackListEntry entry){
 		return listPacksSelected.contains(entry);
 	}
 	
 	@Override
-	public List func_146962_b(ResourcePackListEntry entry){
-		return func_146961_a(entry) ? listPacksSelected : listPacksAvailable;
+	public List getListContaining(ResourcePackListEntry entry){
+		return hasResourcePackEntry(entry) ? listPacksSelected : listPacksAvailable;
 	}
 	
 	@Override
-	public List func_146964_g(){
+	public List<ResourcePackListEntry> getAvailableResourcePacks(){
 		hasUpdated = true;
 		listPacksDummy.clear();
 		return listPacksDummy;
 	}
 	
 	@Override
-	public List func_146963_h(){
+	public List<ResourcePackListEntry> getSelectedResourcePacks(){
 		hasUpdated = true;
 		return listPacksSelected;
 	}

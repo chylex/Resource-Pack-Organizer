@@ -1,11 +1,10 @@
 package chylex.respack.packs;
 import java.io.File;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import chylex.respack.gui.GuiCustomResourcePacks;
 import chylex.respack.gui.GuiUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
@@ -35,7 +34,7 @@ public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
 	
 	@Override
 	public void func_148313_c(){
-		field_148317_a.getTextureManager().bindTexture(folderResource);
+		mc.getTextureManager().bindTexture(folderResource);
 	}
 	
 	@Override
@@ -55,7 +54,7 @@ public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
 	}
 	
 	@Override
-	public void drawEntry(int p_148279_1_, int p_148279_2_, int p_148279_3_, int p_148279_4_, int p_148279_5_, Tessellator p_148279_6_, int p_148279_7_, int p_148279_8_, boolean p_148279_9_){
-		GuiUtils.renderFolderEntry(this,p_148279_1_,p_148279_2_,p_148279_3_,p_148279_4_,p_148279_5_,p_148279_6_,p_148279_7_,p_148279_8_,p_148279_9_);
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected){
+		GuiUtils.renderFolderEntry(this,x,y,isSelected);
 	}
 }

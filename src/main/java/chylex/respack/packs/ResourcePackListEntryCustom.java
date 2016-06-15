@@ -1,8 +1,8 @@
 package chylex.respack.packs;
-import chylex.respack.gui.GuiCustomResourcePacks;
 import net.minecraft.client.resources.ResourcePackListEntryFound;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import chylex.respack.gui.GuiCustomResourcePacks;
 
 @SideOnly(Side.CLIENT)
 public abstract class ResourcePackListEntryCustom extends ResourcePackListEntryFound{

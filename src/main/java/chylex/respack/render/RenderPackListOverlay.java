@@ -8,12 +8,12 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
-import chylex.respack.ResourcePackOrganizer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import chylex.respack.ConfigHandler.DisplayPosition;
+import chylex.respack.ResourcePackOrganizer;
 import com.google.common.collect.Lists;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public final class RenderPackListOverlay{
 	private static final RenderPackListOverlay instance = new RenderPackListOverlay();
@@ -61,7 +61,7 @@ public final class RenderPackListOverlay{
 				return;
 			}
 			
-			final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+			final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
 			final int color = ResourcePackOrganizer.getConfig().options.getDisplayColor();
 			
 			final int edgeDist = 3, topOffset = 2;

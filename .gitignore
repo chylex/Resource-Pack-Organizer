@@ -1,9 +1,11 @@
 bin/
 build/
 eclipse/
+run/
 .gradle/
 .settings/
 .classpath
 .project
 .DS_Store
 Thumbs.db
+*.launch
