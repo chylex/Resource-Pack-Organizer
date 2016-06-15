@@ -7,6 +7,7 @@ import net.minecraftforge.common.MinecraftForge;
 import chylex.respack.ConfigHandler.DisplayPosition;
 import chylex.respack.gui.GuiCustomResourcePacks;
 import chylex.respack.render.RenderPackListOverlay;
+import chylex.respack.repository.ResourcePackRepositoryCustom;
 import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
@@ -43,6 +44,7 @@ public final class ResourcePackOrganizer{
 		MinecraftForge.EVENT_BUS.register(this);
 		FMLCommonHandler.instance().bus().register(this);
 		
+		ResourcePackRepositoryCustom.overrideRepository(config.options.getEnabledPacks());
 		RenderPackListOverlay.refreshPackNames();
 	}
 	
