@@ -28,48 +28,6 @@ import com.google.common.collect.Lists;
 
 @SideOnly(Side.CLIENT)
 public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
-	private static List<ResourcePackListEntryFound> createAvailablePackList(GuiCustomResourcePacks screen, ResourcePackRepository repository){
-		final List<ResourcePackListEntryFound> list = Lists.newArrayList();
-		
-		if (!repository.getDirResourcepacks().equals(screen.currentFolder)){
-			list.add(new ResourcePackListEntryFolder(screen,screen.currentFolder.getParentFile(),true));
-		}
-		
-		final File[] files = screen.currentFolder.listFiles();
-		
-		if (files != null){
-			for(File file:files){
-				if (file.isDirectory() && !new File(file,"pack.mcmeta").isFile()){
-					list.add(new ResourcePackListEntryFolder(screen,file));
-				}
-				else{
-					try{
-						Constructor<Entry> constructor = Entry.class.getDeclaredConstructor(ResourcePackRepository.class,File.class);
-						constructor.setAccessible(true);
-						
-						Entry entry = constructor.newInstance(repository,file);
-						entry.updateResourcePack();
-						list.add(new ResourcePackListEntryFound(screen,entry));
-					}catch(Throwable t){
-						t.printStackTrace();
-					}
-				}
-			}
-		}
-		
-		List<Entry> repositoryEntries = repository.getRepositoryEntries();
-		
-		for(Iterator<ResourcePackListEntryFound> iter = list.iterator(); iter.hasNext();){
-			ResourcePackListEntryFound listEntry = iter.next();
-			
-			if (listEntry.getResourcePackEntry() != null && repositoryEntries.contains(listEntry.getResourcePackEntry())){
-				iter.remove();
-			}
-		}
-		
-		return list;
-	}
-	
 	private final GuiScreen parentScreen;
 	
 	private GuiTextField searchField;
@@ -110,7 +68,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		repository.updateRepositoryEntriesAll();
 		
 		currentFolder = repository.getDirResourcepacks();
-		listPacksAvailable.addAll(createAvailablePackList(this,repository));
+		listPacksAvailable.addAll(createAvailablePackList(repository));
         
         for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
         	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
@@ -232,7 +190,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	
 	public void refreshAvailablePacks(){
 		listPacksAvailable.clear();
-		listPacksAvailable.addAll(createAvailablePackList(this,mc.getResourcePackRepository()));
+		listPacksAvailable.addAll(createAvailablePackList(mc.getResourcePackRepository()));
 		listProcessor.refresh();
 	}
 	
@@ -265,6 +223,47 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		for(GuiButton button:buttonList){
 			button.drawButton(mc,mouseX,mouseY);
 		}
+	}
+	private List<ResourcePackListEntryFound> createAvailablePackList(ResourcePackRepository repository){
+		final List<ResourcePackListEntryFound> list = Lists.newArrayList();
+		
+		if (!repository.getDirResourcepacks().equals(currentFolder)){
+			list.add(new ResourcePackListEntryFolder(this,currentFolder.getParentFile(),true));
+		}
+		
+		final File[] files = currentFolder.listFiles();
+		
+		if (files != null){
+			for(File file:files){
+				if (file.isDirectory() && !new File(file,"pack.mcmeta").isFile()){
+					list.add(new ResourcePackListEntryFolder(this,file));
+				}
+				else{
+					try{
+						Constructor<Entry> constructor = Entry.class.getDeclaredConstructor(ResourcePackRepository.class,File.class);
+						constructor.setAccessible(true);
+						
+						Entry entry = constructor.newInstance(repository,file);
+						entry.updateResourcePack();
+						list.add(new ResourcePackListEntryFound(this,entry));
+					}catch(Throwable t){
+						t.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		List<Entry> repositoryEntries = repository.getRepositoryEntries();
+		
+		for(Iterator<ResourcePackListEntryFound> iter = list.iterator(); iter.hasNext();){
+			ResourcePackListEntryFound listEntry = iter.next();
+			
+			if (listEntry.getResourcePackEntry() != null && repositoryEntries.contains(listEntry.getResourcePackEntry())){
+				iter.remove();
+			}
+		}
+		
+		return list;
 	}
 	
 	// OVERRIDES FROM GuiScreenResourcePacks
