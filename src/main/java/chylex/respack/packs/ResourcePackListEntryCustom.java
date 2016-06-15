@@ -1,8 +1,8 @@
 package chylex.respack.packs;
-import chylex.respack.gui.GuiCustomResourcePacks;
 import net.minecraft.client.resources.ResourcePackListEntryFound;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import chylex.respack.gui.GuiCustomResourcePacks;
 
 @SideOnly(Side.CLIENT)
 public abstract class ResourcePackListEntryCustom extends ResourcePackListEntryFound{
@@ -11,36 +11,16 @@ public abstract class ResourcePackListEntryCustom extends ResourcePackListEntryF
 	}
 	
 	@Override
-	public abstract void func_148313_c();
+	public abstract void bindResourcePackIcon();
 	
 	@Override
-	public abstract String func_148311_a();
+	public abstract String getResourcePackName();
 	
 	@Override
-	public abstract String func_148312_b();
+	public abstract String getResourcePackDescription();
 	
 	@Override
-	public boolean func_148310_d(){
-		return super.func_148310_d();
-	}
-	
-	@Override
-	public boolean func_148307_h(){
-		return super.func_148307_h();
-	}
-	
-	@Override
-	public boolean func_148308_f(){
-		return super.func_148308_f();
-	}
-	
-	@Override
-	public boolean func_148309_e(){
-		return super.func_148309_e();
-	}
-	
-	@Override
-	public boolean func_148314_g(){
-		return super.func_148314_g();
+	public boolean showHoverOverlay(){
+		return super.showHoverOverlay();
 	}
 }
