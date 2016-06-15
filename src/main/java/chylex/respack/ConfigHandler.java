@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
-import cpw.mods.fml.client.config.ConfigGuiType;
-import cpw.mods.fml.client.config.GuiConfig;
-import cpw.mods.fml.client.config.GuiUtils;
-import cpw.mods.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.client.config.ConfigGuiType;
+import net.minecraftforge.fml.client.config.GuiConfig;
+import net.minecraftforge.fml.client.config.GuiUtils;
+import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class ConfigHandler{
 	private final Configuration config;

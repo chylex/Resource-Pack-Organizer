@@ -4,20 +4,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import chylex.respack.ConfigHandler.DisplayPosition;
 import chylex.respack.gui.GuiCustomResourcePacks;
 import chylex.respack.render.RenderPackListOverlay;
-import cpw.mods.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 @Mod(modid = ResourcePackOrganizer.MODID, name = ResourcePackOrganizer.MODNAME, useMetadata = true, guiFactory = "chylex.respack.gui.GuiModConfig")
 public final class ResourcePackOrganizer{
@@ -41,7 +41,6 @@ public final class ResourcePackOrganizer{
 		onConfigLoaded();
 		
 		MinecraftForge.EVENT_BUS.register(this);
-		FMLCommonHandler.instance().bus().register(this);
 		
 		RenderPackListOverlay.refreshPackNames();
 	}
@@ -54,15 +53,15 @@ public final class ResourcePackOrganizer{
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
 	@SideOnly(Side.CLIENT)
 	public void onGuiOpen(GuiOpenEvent e){
-		if (e.gui != null && e.gui.getClass() == GuiScreenResourcePacks.class){
-			e.gui = new GuiCustomResourcePacks(Minecraft.getMinecraft().currentScreen);
+		if (e.getGui() != null && e.getGui().getClass() == GuiScreenResourcePacks.class){
+			e.setGui(new GuiCustomResourcePacks(Minecraft.getMinecraft().currentScreen));
 		}
 	}
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onConfigChanged(OnConfigChangedEvent e){
-		if (e.modID.equals(MODID)){
+		if (e.getModID().equals(MODID)){
 			config.reload();
 			onConfigLoaded();
 		}
