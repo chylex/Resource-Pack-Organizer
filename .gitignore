@@ -1,0 +1,9 @@
+bin/
+build/
+eclipse/
+.gradle/
+.settings/
+.classpath
+.project
+.DS_Store
+Thumbs.db

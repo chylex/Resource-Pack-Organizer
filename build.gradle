@@ -1,0 +1,42 @@
+buildscript{
+    repositories{
+        mavenCentral()
+        maven{
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven{
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+        
+    dependencies{
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+
+archivesBaseName = "BetterResourcePacks"
+
+minecraft{
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
+}
+
+String modid = ""
+String modver = ""
+
+processResources{
+    File info = new File(sourceSets.main.resources.srcDirs.iterator().next(), "mcmod.info")
+    def slurp = new groovy.json.JsonSlurper()
+    def data = slurp.parseText(info.getText())[0]
+    
+    modid = data.modid
+    modver = data.version
+}
+
+jar{
+    archiveName = modid+"  MC-"+project.minecraft.version+"  v"+modver+".jar"
+}
