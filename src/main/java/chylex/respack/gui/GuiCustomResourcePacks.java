@@ -1,7 +1,6 @@
 package chylex.respack.gui;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -21,55 +20,15 @@ import net.minecraft.client.resources.ResourcePackRepository.Entry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
+import chylex.respack.ResourcePackOrganizer;
 import chylex.respack.packs.ResourcePackListEntryFolder;
 import chylex.respack.packs.ResourcePackListProcessor;
 import chylex.respack.render.RenderPackListOverlay;
+import chylex.respack.repository.ResourcePackRepositoryCustom;
 import com.google.common.collect.Lists;
 
 @SideOnly(Side.CLIENT)
 public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
-	private static List<ResourcePackListEntryFound> createAvailablePackList(GuiCustomResourcePacks screen, ResourcePackRepository repository){
-		final List<ResourcePackListEntryFound> list = Lists.newArrayList();
-		
-		if (!repository.getDirResourcepacks().equals(screen.currentFolder)){
-			list.add(new ResourcePackListEntryFolder(screen,screen.currentFolder.getParentFile(),true));
-		}
-		
-		final File[] files = screen.currentFolder.listFiles();
-		
-		if (files != null){
-			for(File file:files){
-				if (file.isDirectory() && !new File(file,"pack.mcmeta").isFile()){
-					list.add(new ResourcePackListEntryFolder(screen,file));
-				}
-				else{
-					try{
-						Constructor<Entry> constructor = Entry.class.getDeclaredConstructor(ResourcePackRepository.class,File.class);
-						constructor.setAccessible(true);
-						
-						Entry entry = constructor.newInstance(repository,file);
-						entry.updateResourcePack();
-						list.add(new ResourcePackListEntryFound(screen,entry));
-					}catch(Throwable t){
-						t.printStackTrace();
-					}
-				}
-			}
-		}
-		
-		List<Entry> repositoryEntries = repository.getRepositoryEntries();
-		
-		for(Iterator<ResourcePackListEntryFound> iter = list.iterator(); iter.hasNext();){
-			ResourcePackListEntryFound listEntry = iter.next();
-			
-			if (listEntry.func_148318_i() != null && repositoryEntries.contains(listEntry.func_148318_i())){
-				iter.remove();
-			}
-		}
-		
-		return list;
-	}
-	
 	private final GuiScreen parentScreen;
 	
 	private GuiTextField searchField;
@@ -110,7 +69,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		repository.updateRepositoryEntriesAll();
 		
 		currentFolder = repository.getDirResourcepacks();
-		listPacksAvailable.addAll(createAvailablePackList(this,repository));
+		listPacksAvailable.addAll(createAvailablePackList(repository));
         
         for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
         	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
@@ -157,7 +116,9 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			mc.gameSettings.saveOptions();
 			mc.refreshResources();
 			
+			ResourcePackOrganizer.getConfig().options.updateEnabledPacks();
 			RenderPackListOverlay.refreshPackNames();
+			
 			mc.displayGuiScreen(parentScreen);
 		}
 	}
@@ -232,7 +193,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	
 	public void refreshAvailablePacks(){
 		listPacksAvailable.clear();
-		listPacksAvailable.addAll(createAvailablePackList(this,mc.getResourcePackRepository()));
+		listPacksAvailable.addAll(createAvailablePackList(mc.getResourcePackRepository()));
 		listProcessor.refresh();
 	}
 	
@@ -265,6 +226,45 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		for(GuiButton button:buttonList){
 			button.drawButton(mc,mouseX,mouseY);
 		}
+	}
+	private List<ResourcePackListEntryFound> createAvailablePackList(ResourcePackRepository repository){
+		final List<ResourcePackListEntryFound> list = Lists.newArrayList();
+		
+		if (!repository.getDirResourcepacks().equals(currentFolder)){
+			list.add(new ResourcePackListEntryFolder(this,currentFolder.getParentFile(),true));
+		}
+		
+		final File[] files = currentFolder.listFiles();
+		
+		if (files != null){
+			for(File file:files){
+				if (file.isDirectory() && !new File(file,"pack.mcmeta").isFile()){
+					list.add(new ResourcePackListEntryFolder(this,file));
+				}
+				else{
+					Entry entry = ResourcePackRepositoryCustom.createEntryInstance(repository,file);
+					
+					if (entry != null){
+						try{
+							entry.updateResourcePack();
+							list.add(new ResourcePackListEntryFound(this,entry));
+						}catch(Exception e){}
+					}
+				}
+			}
+		}
+		
+		List<Entry> repositoryEntries = repository.getRepositoryEntries();
+		
+		for(Iterator<ResourcePackListEntryFound> iter = list.iterator(); iter.hasNext();){
+			ResourcePackListEntryFound listEntry = iter.next();
+			
+			if (listEntry.func_148318_i() != null && repositoryEntries.contains(listEntry.func_148318_i())){
+				iter.remove();
+			}
+		}
+		
+		return list;
 	}
 	
 	// OVERRIDES FROM GuiScreenResourcePacks

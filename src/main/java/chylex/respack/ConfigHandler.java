@@ -2,12 +2,15 @@ package chylex.respack;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.ConfigGuiType;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import com.google.common.collect.ImmutableList;
 
 public class ConfigHandler{
 	private final Configuration config;
@@ -57,12 +60,24 @@ public class ConfigHandler{
 	public class Options{
 		private String displayPosition = "disabled";
 		private char displayColor = 'f';
+		private String[] enabledPacks;
+		
+		private Property propEnabledPacks;
 		
 		void updateOptions(){
 			displayPosition = config.getString("displayPosition","client","disabled","Sets the position of active resource pack list on the screen. Valid values are: disabled, top left, top right, bottom right, bottom left",DisplayPosition.validValues);
 			
 			String color = config.getString("displayColor","client","f","Sets the color of active resource pack list. Valid value is a single lowercase hexadecimal character (0 to f) where '0' is black and 'f' is white","f0123456789abcde".split(""));
 			if (!color.isEmpty())displayColor = color.charAt(0);
+			
+			propEnabledPacks = config.get("client","enabledPacks",new String[0],"Internal list of enabled resource packs.");
+			propEnabledPacks.setShowInGui(false);
+			enabledPacks = propEnabledPacks.getStringList();
+			
+			if (enabledPacks.length == 0){
+				List<String> packs = Minecraft.getMinecraft().gameSettings.resourcePacks;
+				enabledPacks = packs.toArray(new String[packs.size()]);
+			}
 		}
 		
 		public DisplayPosition getDisplayPosition(){
@@ -77,6 +92,16 @@ public class ConfigHandler{
 		
 		public int getDisplayColor(){
 			return GuiUtils.getColorCode(displayColor,true);
+		}
+		
+		public List<String> getEnabledPacks(){
+			return ImmutableList.copyOf(enabledPacks);
+		}
+		
+		public void updateEnabledPacks(){
+			List<String> packs = Minecraft.getMinecraft().gameSettings.resourcePacks;
+			propEnabledPacks.set(packs.toArray(new String[packs.size()]));
+			config.save();
 		}
 	}
 	
