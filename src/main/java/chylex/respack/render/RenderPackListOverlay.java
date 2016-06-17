@@ -11,19 +11,26 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import chylex.respack.ResourcePackOrganizer;
 import chylex.respack.ConfigHandler.DisplayPosition;
+import chylex.respack.ResourcePackOrganizer;
 import com.google.common.collect.Lists;
 
 public final class RenderPackListOverlay{
 	private static final RenderPackListOverlay instance = new RenderPackListOverlay();
+	private static boolean isRegistered;
 	
 	public static void register(){
+		if (isRegistered)return;
+		
+		isRegistered = true;
 		MinecraftForge.EVENT_BUS.register(instance);
 		refreshPackNames();
 	}
 	
 	public static void unregister(){
+		if (!isRegistered)return;
+		
+		isRegistered = false;
 		MinecraftForge.EVENT_BUS.unregister(instance);
 	}
 
