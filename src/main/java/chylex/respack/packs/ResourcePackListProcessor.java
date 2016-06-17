@@ -1,4 +1,5 @@
 package chylex.respack.packs;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -80,7 +81,9 @@ public class ResourcePackListProcessor{
 			}
 		}
 		
-		if (sorter != null)targetList.sort(sorter);
+		if (sorter != null){
+			Collections.sort(targetList,sorter);
+		}
 	}
 	
 	private boolean checkFilter(String entryText){
