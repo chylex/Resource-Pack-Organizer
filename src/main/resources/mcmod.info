@@ -5,7 +5,7 @@
   "description": "Enhances the Resource Pack menu by adding folder support for easier pack organization, ability to search packs by name or description, new sorting options, and quick refresh button directly in the GUI.\n\nThe mod uses a folder icon by FatCow under the CC BY 3.0 US license: http://fatcow.com/free-icons",
   "version": "1.0.1",
   "mcversion": "1.7.10",
-  "url": "http://chylex.com",
+  "url": "https://respacks.chylex.com",
   "authorList": ["chylex"],
   "logoFile": "rpo_logo.png"
 }
