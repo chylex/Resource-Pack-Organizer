@@ -8,8 +8,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
-import chylex.respack.ResourcePackOrganizer;
 import chylex.respack.ConfigHandler.DisplayPosition;
+import chylex.respack.ResourcePackOrganizer;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -17,13 +17,20 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public final class RenderPackListOverlay{
 	private static final RenderPackListOverlay instance = new RenderPackListOverlay();
+	private static boolean isRegistered;
 	
 	public static void register(){
+		if (isRegistered)return;
+		
+		isRegistered = true;
 		MinecraftForge.EVENT_BUS.register(instance);
 		refreshPackNames();
 	}
 	
 	public static void unregister(){
+		if (!isRegistered)return;
+		
+		isRegistered = false;
 		MinecraftForge.EVENT_BUS.unregister(instance);
 	}
 
