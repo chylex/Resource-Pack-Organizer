@@ -17,13 +17,20 @@ import com.google.common.collect.Lists;
 
 public final class RenderPackListOverlay{
 	private static final RenderPackListOverlay instance = new RenderPackListOverlay();
+	private static boolean isRegistered;
 	
 	public static void register(){
+		if (isRegistered)return;
+		
+		isRegistered = true;
 		MinecraftForge.EVENT_BUS.register(instance);
 		refreshPackNames();
 	}
 	
 	public static void unregister(){
+		if (!isRegistered)return;
+		
+		isRegistered = false;
 		MinecraftForge.EVENT_BUS.unregister(instance);
 	}
 
