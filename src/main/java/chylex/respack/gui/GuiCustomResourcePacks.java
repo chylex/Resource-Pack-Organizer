@@ -2,6 +2,7 @@ package chylex.respack.gui;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.gui.GuiButton;
@@ -42,6 +43,8 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
     private File currentFolder;
     private GuiButton selectedButton;
     private boolean hasUpdated, requiresReload;
+    
+    private Comparator<ResourcePackListEntry> currentSorter;
 	
 	public GuiCustomResourcePacks(GuiScreen parentScreen){
 		super(parentScreen);
@@ -59,7 +62,9 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		buttonList.add(new GuiOptionButton(11,width/2-204+44,height-26,40,20,"Z-A"));
 		buttonList.add(new GuiOptionButton(20,width/2-74,height-26,70,20,"Refresh"));
 		
+		String prevText = searchField == null ? "" : searchField.getText();
 		searchField = new GuiTextField(30,fontRendererObj,width/2-203,height-46,198,16);
+		searchField.setText(prevText);
 		
 		if (!requiresReload){
 			listPacksAvailable = Lists.newArrayListWithCapacity(8);
@@ -91,7 +96,8 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		guiPacksSelected.top = 4;
 		
 		listProcessor = new ResourcePackListProcessor(listPacksAvailable,listPacksAvailableProcessed);
-		listProcessor.setSorter(ResourcePackListProcessor.sortAZ);
+		listProcessor.setSorter(currentSorter == null ? (currentSorter = ResourcePackListProcessor.sortAZ) : currentSorter);
+		listProcessor.setFilter(searchField.getText().trim());
 	}
 	
 	@Override
@@ -100,10 +106,10 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			refreshAvailablePacks();
 		}
 		else if (button.id == 11){
-			listProcessor.setSorter(ResourcePackListProcessor.sortZA);
+			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortZA);
 		}
 		else if (button.id == 10){
-			listProcessor.setSorter(ResourcePackListProcessor.sortAZ);
+			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortAZ);
 		}
 		else if (button.id == 2){
 			OpenGlHelper.openFile(mc.getResourcePackRepository().getDirResourcepacks());
