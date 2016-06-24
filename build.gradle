@@ -14,7 +14,7 @@ buildscript{
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 minecraft{
-    version = "1.9.4-12.17.0.1963"
+    version = "1.10-12.18.0.1986-1.10.0"
     runDir = "run"
     mappings = "snapshot_20160518"
     makeObfSourceJar = false
