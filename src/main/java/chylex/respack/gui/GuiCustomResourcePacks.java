@@ -12,7 +12,6 @@ import net.minecraft.client.gui.GuiResourcePackSelected;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.ResourcePackListEntry;
 import net.minecraft.client.resources.ResourcePackListEntryDefault;
@@ -112,7 +111,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortAZ);
 		}
 		else if (button.id == 2){
-			OpenGlHelper.openFile(mc.getResourcePackRepository().getDirResourcepacks());
+			GuiUtils.openFolder(mc.getResourcePackRepository().getDirResourcepacks());
 		}
 		else if (button.id == 1){
 			if (requiresReload){
