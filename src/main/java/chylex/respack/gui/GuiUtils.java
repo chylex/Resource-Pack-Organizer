@@ -1,48 +1,16 @@
 package chylex.respack.gui;
-import java.io.File;
-import java.net.URI;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.Util;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.Sys;
 import org.lwjgl.opengl.GL11;
 import chylex.respack.packs.ResourcePackListEntryFolder;
 
 @SideOnly(Side.CLIENT)
 public final class GuiUtils{
 	private static final Minecraft mc = Minecraft.getMinecraft();
-	
-	public static void openFolder(File file){
-		String s = file.getAbsolutePath();
-		
-		if (Util.getOSType() == Util.EnumOS.OSX){
-			try{
-				Runtime.getRuntime().exec(new String[]{ "/usr/bin/open", s });
-				return;
-			}catch(Exception e){}
-		}
-		else if (Util.getOSType() == Util.EnumOS.WINDOWS){
-			String command = String.format("cmd.exe /C start \"Open file\" \"%s\"",s);
-			
-			try{
-				Runtime.getRuntime().exec(command);
-				return;
-			}catch(Exception e){}
-		}
-		
-		try{
-			final Class cls = Class.forName("java.awt.Desktop");
-			final Object desktop = cls.getMethod("getDesktop").invoke(null);
-			
-			cls.getMethod("browse",URI.class).invoke(desktop,file.toURI());
-		}catch(Throwable t){
-			Sys.openURL("file://"+s);
-		}
-	}
 	
 	public static void renderFolderEntry(ResourcePackListEntryFolder entry, int x, int y, boolean isSelected){
 		entry.func_148313_c();
