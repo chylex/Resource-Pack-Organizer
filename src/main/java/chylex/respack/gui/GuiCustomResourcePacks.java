@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiResourcePackSelected;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiScreenResourcePacks;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.resources.ResourcePackListEntry;
 import net.minecraft.client.resources.ResourcePackListEntryDefault;
@@ -40,7 +41,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
     
     private File currentFolder;
     private GuiButton selectedButton;
-    private boolean hasUpdated;
+    private boolean hasUpdated, requiresReload;
 	
 	public GuiCustomResourcePacks(GuiScreen parentScreen){
 		super(parentScreen);
@@ -59,23 +60,25 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		buttonList.add(new GuiOptionButton(20,width/2-74,height-26,70,20,"Refresh"));
 		
 		searchField = new GuiTextField(30,fontRendererObj,width/2-203,height-46,198,16);
-
-		listPacksAvailable = Lists.newArrayListWithCapacity(8);
-		listPacksAvailableProcessed = Lists.newArrayListWithCapacity(8);
-		listPacksDummy = Lists.newArrayListWithCapacity(1);
-		listPacksSelected = Lists.newArrayListWithCapacity(8);
 		
-		ResourcePackRepository repository = mc.getResourcePackRepository();
-		repository.updateRepositoryEntriesAll();
-		
-		currentFolder = repository.getDirResourcepacks();
-		listPacksAvailable.addAll(createAvailablePackList(repository));
-        
-        for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
-        	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
-        }
-        
-        listPacksSelected.add(new ResourcePackListEntryDefault(this));
+		if (!requiresReload){
+			listPacksAvailable = Lists.newArrayListWithCapacity(8);
+			listPacksAvailableProcessed = Lists.newArrayListWithCapacity(8);
+			listPacksDummy = Lists.newArrayListWithCapacity(1);
+			listPacksSelected = Lists.newArrayListWithCapacity(8);
+			
+			ResourcePackRepository repository = mc.getResourcePackRepository();
+			repository.updateRepositoryEntriesAll();
+			
+			currentFolder = repository.getDirResourcepacks();
+			listPacksAvailable.addAll(createAvailablePackList(repository));
+	        
+	        for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
+	        	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
+	        }
+	        
+	        listPacksSelected.add(new ResourcePackListEntryDefault(this));
+		}
 		
 		guiPacksAvailable = new GuiResourcePackAvailable(mc,200,height,listPacksAvailableProcessed);
 		guiPacksAvailable.setSlotXBoundsFromLeft(width/2-204);
@@ -103,21 +106,23 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			listProcessor.setSorter(ResourcePackListProcessor.sortAZ);
 		}
 		else if (button.id == 2){
-			GuiUtils.openFolder(mc.getResourcePackRepository().getDirResourcepacks());
+			OpenGlHelper.openFile(mc.getResourcePackRepository().getDirResourcepacks());
 		}
 		else if (button.id == 1){
-			List<Entry> selected = refreshSelectedPacks();
-			mc.gameSettings.resourcePacks.clear();
-			
-			for(Entry entry:selected){
-				mc.gameSettings.resourcePacks.add(entry.getResourcePackName());
+			if (requiresReload){
+				List<Entry> selected = refreshSelectedPacks();
+				mc.gameSettings.resourcePacks.clear();
+				
+				for(Entry entry:selected){
+					mc.gameSettings.resourcePacks.add(entry.getResourcePackName());
+				}
+				
+				mc.gameSettings.saveOptions();
+				mc.refreshResources();
+				
+				ResourcePackOrganizer.getConfig().options.updateEnabledPacks();
+				RenderPackListOverlay.refreshPackNames();
 			}
-			
-			mc.gameSettings.saveOptions();
-			mc.refreshResources();
-			
-			ResourcePackOrganizer.getConfig().options.updateEnabledPacks();
-			RenderPackListOverlay.refreshPackNames();
 			
 			mc.displayGuiScreen(parentScreen);
 		}
@@ -293,5 +298,10 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	public List<ResourcePackListEntry> getSelectedResourcePacks(){
 		hasUpdated = true;
 		return listPacksSelected;
+	}
+	
+	@Override
+	public void markChanged(){
+		requiresReload = true;
 	}
 }
