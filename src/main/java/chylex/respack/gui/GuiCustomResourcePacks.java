@@ -149,6 +149,9 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		}catch(NullPointerException e){
 			// calls super.handleMouseInput and then attempts to use selectedResourcePacksList and availableResourcePacksList which are null
 		}
+		
+		guiPacksAvailable.handleMouseInput();
+		guiPacksSelected.handleMouseInput();
 	}
 	
 	@Override
