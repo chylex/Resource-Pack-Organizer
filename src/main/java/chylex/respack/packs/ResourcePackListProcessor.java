@@ -38,14 +38,14 @@ public class ResourcePackListProcessor{
 	public static final Comparator<ResourcePackListEntry> sortAZ = new Comparator<ResourcePackListEntry>(){
 		@Override
 		public int compare(ResourcePackListEntry entry1, ResourcePackListEntry entry2){
-			return String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1,false),nameSort(entry2,false));
+			return String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1, false), nameSort(entry2, false));
 		};
 	};
 	
 	public static final Comparator<ResourcePackListEntry> sortZA = new Comparator<ResourcePackListEntry>(){
 		@Override
 		public int compare(ResourcePackListEntry entry1, ResourcePackListEntry entry2){
-			return -String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1,true),nameSort(entry2,true));
+			return -String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1, true), nameSort(entry2, true));
 		};
 	};
 	
@@ -70,7 +70,7 @@ public class ResourcePackListProcessor{
 			textFilter = null;
 		}
 		else{
-			textFilter = Pattern.compile("\\Q"+text.replace("*","\\E.*\\Q")+"\\E",Pattern.CASE_INSENSITIVE);
+			textFilter = Pattern.compile("\\Q"+text.replace("*", "\\E.*\\Q")+"\\E", Pattern.CASE_INSENSITIVE);
 		}
 		
 		refresh();
@@ -86,7 +86,7 @@ public class ResourcePackListProcessor{
 		}
 		
 		if (sorter != null){
-			Collections.sort(targetList,sorter);
+			Collections.sort(targetList, sorter);
 		}
 	}
 	

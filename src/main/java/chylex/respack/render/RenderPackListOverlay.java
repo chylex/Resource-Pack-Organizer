@@ -51,7 +51,7 @@ public final class RenderPackListOverlay{
 			String name = entry.getResourcePackName();
 			
 			if (name.endsWith(".zip")){
-				name = name.substring(0,name.length()-4);
+				name = name.substring(0, name.length()-4);
 			}
 			
 			packNames.add(name);
@@ -78,15 +78,15 @@ public final class RenderPackListOverlay{
 			int y = position == DisplayPosition.TOP_LEFT || position == DisplayPosition.TOP_RIGHT ? edgeDist : e.getResolution().getScaledHeight()-edgeDist-topOffset-ySpacing*(1+packNames.size());
 			boolean alignRight = position == DisplayPosition.TOP_RIGHT || position == DisplayPosition.BOTTOM_RIGHT;
 			
-			renderText(font,TextFormatting.UNDERLINE+"Resource Packs",x,y,color,alignRight);
+			renderText(font, TextFormatting.UNDERLINE+"Resource Packs", x, y, color, alignRight);
 			
 			for(int line = 0; line < packNames.size(); line++){
-				renderText(font,packNames.get(line),x,y+topOffset+(line+1)*ySpacing,color,alignRight);
+				renderText(font, packNames.get(line), x, y+topOffset+(line+1)*ySpacing, color, alignRight);
 			}
 		}
 	}
 	
 	private static void renderText(FontRenderer renderer, String line, int x, int y, int color, boolean alignRight){
-		renderer.drawString(line,alignRight ? x-renderer.getStringWidth(line) : x,y,color,color != 0);
+		renderer.drawString(line, alignRight ? x-renderer.getStringWidth(line) : x, y, color, color != 0);
 	}
 }

@@ -7,7 +7,7 @@ import chylex.respack.gui.GuiCustomResourcePacks;
 @SideOnly(Side.CLIENT)
 public abstract class ResourcePackListEntryCustom extends ResourcePackListEntryFound{
 	public ResourcePackListEntryCustom(GuiCustomResourcePacks ownerScreen){
-		super(ownerScreen,null);
+		super(ownerScreen, null);
 	}
 	
 	@Override

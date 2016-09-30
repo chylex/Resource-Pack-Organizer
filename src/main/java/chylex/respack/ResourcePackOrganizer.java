@@ -35,7 +35,7 @@ public final class ResourcePackOrganizer{
 	public void onPreInit(FMLPreInitializationEvent e){
 		if (FMLCommonHandler.instance().getSide() == Side.SERVER){
 			FMLLog.bigWarning(MODNAME+" cannot be installed on a server!");
-			FMLCommonHandler.instance().exitJava(1,false);
+			FMLCommonHandler.instance().exitJava(1, false);
 		}
 		
 		config = new ConfigHandler(e.getSuggestedConfigurationFile());
@@ -48,7 +48,7 @@ public final class ResourcePackOrganizer{
 	}
 	
 	@NetworkCheckHandler
-	public boolean onNetworkCheck(Map<String,String> versions, Side side){
+	public boolean onNetworkCheck(Map<String, String> versions, Side side){
 		return true;
 	}
 	

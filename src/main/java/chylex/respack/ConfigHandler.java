@@ -65,12 +65,12 @@ public class ConfigHandler{
 		private Property propEnabledPacks;
 		
 		void updateOptions(){
-			displayPosition = config.getString("displayPosition","client","disabled","Sets the position of active resource pack list on the screen. Valid values are: disabled, top left, top right, bottom right, bottom left",DisplayPosition.validValues);
+			displayPosition = config.getString("displayPosition", "client", "disabled", "Sets the position of active resource pack list on the screen. Valid values are: disabled, top left, top right, bottom right, bottom left", DisplayPosition.validValues);
 			
-			String color = config.getString("displayColor","client","f","Sets the color of active resource pack list. Valid value is a single lowercase hexadecimal character (0 to f) where '0' is black and 'f' is white","f0123456789abcde".split(""));
+			String color = config.getString("displayColor", "client", "f", "Sets the color of active resource pack list. Valid value is a single lowercase hexadecimal character (0 to f) where '0' is black and 'f' is white", "f0123456789abcde".split(""));
 			if (!color.isEmpty())displayColor = color.charAt(0);
 			
-			propEnabledPacks = config.get("client","enabledPacks",new String[0],"Internal list of enabled resource packs.");
+			propEnabledPacks = config.get("client", "enabledPacks", new String[0], "Internal list of enabled resource packs.");
 			propEnabledPacks.setShowInGui(false);
 			enabledPacks = propEnabledPacks.getStringList();
 			
@@ -91,7 +91,7 @@ public class ConfigHandler{
 		}
 		
 		public int getDisplayColor(){
-			return GuiUtils.getColorCode(displayColor,true);
+			return GuiUtils.getColorCode(displayColor, true);
 		}
 		
 		public List<String> getEnabledPacks(){

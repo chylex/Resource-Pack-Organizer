@@ -55,15 +55,15 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	public void initGui(){
 		Keyboard.enableRepeatEvents(true);
 		
-		buttonList.add(new GuiOptionButton(1,width/2+100-75,height-26,I18n.format("gui.done")));
-		buttonList.add(new GuiOptionButton(2,width/2+100-75,height-48,I18n.format("resourcePack.openFolder")));
+		buttonList.add(new GuiOptionButton(1, width/2+100-75, height-26, I18n.format("gui.done")));
+		buttonList.add(new GuiOptionButton(2, width/2+100-75, height-48, I18n.format("resourcePack.openFolder")));
 		
-		buttonList.add(new GuiOptionButton(10,width/2-204,height-26,40,20,"A-Z"));
-		buttonList.add(new GuiOptionButton(11,width/2-204+44,height-26,40,20,"Z-A"));
-		buttonList.add(new GuiOptionButton(20,width/2-74,height-26,70,20,"Refresh"));
+		buttonList.add(new GuiOptionButton(10, width/2-204, height-26, 40, 20, "A-Z"));
+		buttonList.add(new GuiOptionButton(11, width/2-204+44, height-26, 40, 20, "Z-A"));
+		buttonList.add(new GuiOptionButton(20, width/2-74, height-26, 70, 20, "Refresh"));
 		
 		String prevText = searchField == null ? "" : searchField.getText();
-		searchField = new GuiTextField(30,fontRendererObj,width/2-203,height-46,198,16);
+		searchField = new GuiTextField(30, fontRendererObj, width/2-203, height-46, 198, 16);
 		searchField.setText(prevText);
 		
 		if (!requiresReload){
@@ -79,23 +79,23 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			listPacksAvailable.addAll(createAvailablePackList(repository));
 	        
 	        for(Entry entry:Lists.reverse(repository.getRepositoryEntries())){
-	        	listPacksSelected.add(new ResourcePackListEntryFound(this,entry));
+	        	listPacksSelected.add(new ResourcePackListEntryFound(this, entry));
 	        }
 	        
 	        listPacksSelected.add(new ResourcePackListEntryDefault(this));
 		}
 		
-		guiPacksAvailable = new GuiResourcePackAvailable(mc,200,height,listPacksAvailableProcessed);
+		guiPacksAvailable = new GuiResourcePackAvailable(mc, 200, height, listPacksAvailableProcessed);
 		guiPacksAvailable.setSlotXBoundsFromLeft(width/2-204);
-		guiPacksAvailable.registerScrollButtons(7,8);
+		guiPacksAvailable.registerScrollButtons(7, 8);
 		guiPacksAvailable.top = 4;
 		
-		guiPacksSelected = new GuiResourcePackSelected(mc,200,height,listPacksSelected);
+		guiPacksSelected = new GuiResourcePackSelected(mc, 200, height, listPacksSelected);
 		guiPacksSelected.setSlotXBoundsFromLeft(width/2+4);
-		guiPacksSelected.registerScrollButtons(7,8);
+		guiPacksSelected.registerScrollButtons(7, 8);
 		guiPacksSelected.top = 4;
 		
-		listProcessor = new ResourcePackListProcessor(listPacksAvailable,listPacksAvailableProcessed);
+		listProcessor = new ResourcePackListProcessor(listPacksAvailable, listPacksAvailableProcessed);
 		listProcessor.setSorter(currentSorter == null ? (currentSorter = ResourcePackListProcessor.sortAZ) : currentSorter);
 		listProcessor.setFilter(searchField.getText().trim());
 	}
@@ -138,7 +138,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	protected void mouseClicked(int mouseX, int mouseY, int buttonId){
 		if (buttonId == 0){
 			for(GuiButton button:buttonList){
-				if (button.mousePressed(mc,mouseX,mouseY)){
+				if (button.mousePressed(mc, mouseX, mouseY)){
 					selectedButton = button;
 					button.playPressSound(mc.getSoundHandler());
 					actionPerformed(button);
@@ -146,9 +146,9 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 			}
 		}
 		
-		guiPacksAvailable.mouseClicked(mouseX,mouseY,buttonId);
-		guiPacksSelected.mouseClicked(mouseX,mouseY,buttonId);
-		searchField.mouseClicked(mouseX,mouseY,buttonId);
+		guiPacksAvailable.mouseClicked(mouseX, mouseY, buttonId);
+		guiPacksSelected.mouseClicked(mouseX, mouseY, buttonId);
+		searchField.mouseClicked(mouseX, mouseY, buttonId);
 		
 		listProcessor.refresh();
 	}
@@ -168,17 +168,17 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int eventType){
 		if (eventType == 0 && selectedButton != null){
-			selectedButton.mouseReleased(mouseX,mouseY);
+			selectedButton.mouseReleased(mouseX, mouseY);
 			selectedButton = null;
 		}
 	}
 	
 	@Override
 	protected void keyTyped(char keyChar, int keyCode) throws IOException{
-		super.keyTyped(keyChar,keyCode);
+		super.keyTyped(keyChar, keyCode);
 		
 		if (searchField.isFocused()){
-			searchField.textboxKeyTyped(keyChar,keyCode);
+			searchField.textboxKeyTyped(keyChar, keyCode);
 			listProcessor.setFilter(searchField.getText().trim());
 		}
 	}
@@ -233,35 +233,35 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTickTime){
 		drawBackground(0);
-		guiPacksAvailable.drawScreen(mouseX,mouseY,partialTickTime);
-		guiPacksSelected.drawScreen(mouseX,mouseY,partialTickTime);
+		guiPacksAvailable.drawScreen(mouseX, mouseY, partialTickTime);
+		guiPacksSelected.drawScreen(mouseX, mouseY, partialTickTime);
 		searchField.drawTextBox();
 		
 		for(GuiButton button:buttonList){
-			button.drawButton(mc,mouseX,mouseY);
+			button.drawButton(mc, mouseX, mouseY);
 		}
 	}
 	private List<ResourcePackListEntryFound> createAvailablePackList(ResourcePackRepository repository){
 		final List<ResourcePackListEntryFound> list = Lists.newArrayList();
 		
 		if (!repository.getDirResourcepacks().equals(currentFolder)){
-			list.add(new ResourcePackListEntryFolder(this,currentFolder.getParentFile(),true));
+			list.add(new ResourcePackListEntryFolder(this, currentFolder.getParentFile(), true));
 		}
 		
 		final File[] files = currentFolder.listFiles();
 		
 		if (files != null){
 			for(File file:files){
-				if (file.isDirectory() && !new File(file,"pack.mcmeta").isFile()){
-					list.add(new ResourcePackListEntryFolder(this,file));
+				if (file.isDirectory() && !new File(file, "pack.mcmeta").isFile()){
+					list.add(new ResourcePackListEntryFolder(this, file));
 				}
 				else{
-					Entry entry = ResourcePackRepositoryCustom.createEntryInstance(repository,file);
+					Entry entry = ResourcePackRepositoryCustom.createEntryInstance(repository, file);
 					
 					if (entry != null){
 						try{
 							entry.updateResourcePack();
-							list.add(new ResourcePackListEntryFound(this,entry));
+							list.add(new ResourcePackListEntryFound(this, entry));
 						}catch(Exception e){}
 					}
 				}

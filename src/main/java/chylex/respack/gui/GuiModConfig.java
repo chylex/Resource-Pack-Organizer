@@ -30,7 +30,7 @@ public final class GuiModConfig implements IModGuiFactory{
 	@SideOnly(Side.CLIENT)
 	public static final class GuiModConfigInner extends GuiConfig{
 		public GuiModConfigInner(GuiScreen parent){
-			super(parent,ResourcePackOrganizer.getConfig().getGuiConfigElements(),ResourcePackOrganizer.MODID,false,false,ResourcePackOrganizer.getConfig().getGuiConfigString());
+			super(parent, ResourcePackOrganizer.getConfig().getGuiConfigElements(), ResourcePackOrganizer.MODID, false, false, ResourcePackOrganizer.getConfig().getGuiConfigString());
 		}
 	}
 }
