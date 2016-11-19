@@ -13,14 +13,20 @@ buildscript{
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+sourceCompatibility = targetCompatibility = 1.6
+
+compileJava{
+    sourceCompatibility = targetCompatibility = 1.6
+}
+
 minecraft{
-    version = "1.10-12.18.0.1986-1.10.0"
+    version = "1.11-13.19.0.2153"
     runDir = "run"
-    mappings = "snapshot_20160518"
+    mappings = "snapshot_20161118"
     makeObfSourceJar = false
 }
 
-String modid = ""
+String modname = ""
 String modver = ""
 
 processResources{
@@ -28,10 +34,10 @@ processResources{
     def slurp = new groovy.json.JsonSlurper()
     def data = slurp.parseText(info.getText())[0]
     
-    modid = data.modid
+    modname = data.name.replaceAll(" ", "")
     modver = data.version
 }
 
 jar{
-    archiveName = modid+"  MC-"+project.minecraft.version+"  v"+modver+".jar"
+    archiveName = modname+"  MC-"+project.minecraft.version+"  v"+modver+".jar"
 }

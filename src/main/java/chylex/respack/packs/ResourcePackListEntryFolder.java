@@ -8,7 +8,7 @@ import chylex.respack.gui.GuiUtils;
 
 @SideOnly(Side.CLIENT)
 public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
-	private static final ResourceLocation folderResource = new ResourceLocation("betterresourcepacks:textures/gui/folder.png"); // http://www.iconspedia.com/icon/folion-icon-27237.html
+	private static final ResourceLocation folderResource = new ResourceLocation("resourcepackorganizer:textures/gui/folder.png"); // http://www.iconspedia.com/icon/folion-icon-27237.html
 	
 	private final GuiCustomResourcePacks ownerScreen;
 	

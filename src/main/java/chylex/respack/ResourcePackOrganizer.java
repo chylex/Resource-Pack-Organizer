@@ -22,7 +22,7 @@ import chylex.respack.repository.ResourcePackRepositoryCustom;
 
 @Mod(modid = ResourcePackOrganizer.MODID, name = ResourcePackOrganizer.MODNAME, useMetadata = true, guiFactory = "chylex.respack.gui.GuiModConfig")
 public final class ResourcePackOrganizer{
-	public static final String MODID = "ResourcePackOrganizer";
+	public static final String MODID = "resourcepackorganizer";
 	public static final String MODNAME = "Resource Pack Organizer";
 	
 	private static ConfigHandler config;
