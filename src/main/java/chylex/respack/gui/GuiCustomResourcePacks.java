@@ -58,12 +58,12 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		buttonList.add(new GuiOptionButton(1, width/2+100-75, height-26, I18n.format("gui.done")));
 		buttonList.add(new GuiOptionButton(2, width/2+100-75, height-48, I18n.format("resourcePack.openFolder")));
 		
-		buttonList.add(new GuiOptionButton(10, width/2-204, height-26, 40, 20, "A-Z"));
-		buttonList.add(new GuiOptionButton(11, width/2-204+44, height-26, 40, 20, "Z-A"));
-		buttonList.add(new GuiOptionButton(20, width/2-74, height-26, 70, 20, "Refresh"));
+		buttonList.add(new GuiButton(10, width/2-204, height-26, 40, 20, "A-Z"));
+		buttonList.add(new GuiButton(11, width/2-204+44, height-26, 40, 20, "Z-A"));
+		buttonList.add(new GuiButton(20, width/2-74, height-26, 70, 20, "Refresh"));
 		
 		String prevText = searchField == null ? "" : searchField.getText();
-		searchField = new GuiTextField(30, fontRendererObj, width/2-203, height-46, 198, 16);
+		searchField = new GuiTextField(30, fontRenderer, width/2-203, height-46, 198, 16);
 		searchField.setText(prevText);
 		
 		if (!requiresReload){
@@ -238,7 +238,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		searchField.drawTextBox();
 		
 		for(GuiButton button:buttonList){
-			button.drawButton(mc, mouseX, mouseY);
+			button.drawButton(mc, mouseX, mouseY, partialTickTime);
 		}
 	}
 	private List<ResourcePackListEntryFound> createAvailablePackList(ResourcePackRepository repository){

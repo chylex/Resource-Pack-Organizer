@@ -68,7 +68,7 @@ public final class RenderPackListOverlay{
 				return;
 			}
 			
-			final FontRenderer font = Minecraft.getMinecraft().fontRendererObj;
+			final FontRenderer font = Minecraft.getMinecraft().fontRenderer;
 			final int color = ResourcePackOrganizer.getConfig().options.getDisplayColor();
 			
 			final int edgeDist = 3, topOffset = 2;

@@ -28,17 +28,17 @@ public final class GuiUtils{
 		}
 		
 		String s = entry.getResourcePackName();
-		i2 = mc.fontRendererObj.getStringWidth(s);
+		i2 = mc.fontRenderer.getStringWidth(s);
 		
-		if (i2>157){
-			s = mc.fontRendererObj.trimStringToWidth(s, 157-mc.fontRendererObj.getStringWidth("..."))+"...";
+		if (i2 > 157){
+			s = mc.fontRenderer.trimStringToWidth(s, 157-mc.fontRenderer.getStringWidth("..."))+"...";
 		}
 		
-		mc.fontRendererObj.drawStringWithShadow(s, x+32+2, y+1, 16777215);
-		List list = mc.fontRendererObj.listFormattedStringToWidth(entry.getResourcePackDescription(), 157);
+		mc.fontRenderer.drawStringWithShadow(s, x+32+2, y+1, 16777215);
+		List list = mc.fontRenderer.listFormattedStringToWidth(entry.getResourcePackDescription(), 157);
 		
-		for(int j2 = 0; j2<2&&j2<list.size(); ++j2){
-			mc.fontRendererObj.drawStringWithShadow((String)list.get(j2), x+32+2, y+12+10*j2, 8421504);
+		for(int j2 = 0; j2 < 2 && j2 < list.size(); ++j2){
+			mc.fontRenderer.drawStringWithShadow((String)list.get(j2), x+32+2, y+12+10*j2, 8421504);
 		}
 	}
 }

@@ -54,7 +54,7 @@ public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
 	}
 	
 	@Override
-	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected){
+	public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY, boolean isSelected, float partialTicks){
 		GuiUtils.renderFolderEntry(this, x, y, isSelected);
 	}
 }

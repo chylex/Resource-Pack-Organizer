@@ -11,20 +11,19 @@ import chylex.respack.ResourcePackOrganizer;
 public final class GuiModConfig implements IModGuiFactory{
 	@Override
 	public void initialize(Minecraft mc){}
-
+	
 	@Override
-	public Class<? extends GuiScreen> mainConfigGuiClass(){
-		return GuiModConfigInner.class;
+	public boolean hasConfigGui(){
+		return true;
+	}
+	
+	@Override
+	public GuiScreen createConfigGui(GuiScreen parentScreen){
+		return new GuiModConfigInner(parentScreen);
 	}
 
 	@Override
 	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories(){
-		return null;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element){
 		return null;
 	}
 	
