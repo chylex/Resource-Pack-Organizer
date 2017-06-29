@@ -26,6 +26,8 @@ public class ResourcePackRepositoryCustom extends ResourcePackRepository{
 		try{
 			ResourcePackRepository originalRepo = (ResourcePackRepository)fieldRepository.get(mc);
 			fieldRepository.set(mc, new ResourcePackRepositoryCustom(fileResourcepacks, new File(mc.mcDataDir, "server-resource-packs"), mc.mcDefaultResourcePack, originalRepo.rprMetadataSerializer, mc.gameSettings, enabledPacks));
+			
+			mc.refreshResources();
 		}catch(Throwable t){
 			throw new RuntimeException(t);
 		}
