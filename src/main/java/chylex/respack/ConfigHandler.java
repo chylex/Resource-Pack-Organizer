@@ -26,7 +26,7 @@ public class ConfigHandler{
 	
 	public List<IConfigElement> getGuiConfigElements(){
 		List<IConfigElement> originalElements = new ConfigElement(config.getCategory("client")).getChildElements();
-		List<IConfigElement> usedElements = new ArrayList<IConfigElement>();
+		List<IConfigElement> usedElements = new ArrayList<>();
 		
 		for(IConfigElement element : originalElements){
 			if (element.getName().equals("displayColor")){

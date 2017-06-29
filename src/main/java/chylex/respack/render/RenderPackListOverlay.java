@@ -39,7 +39,7 @@ public final class RenderPackListOverlay{
 		instance.refresh();
 	}
 	
-	private List<String> packNames = new ArrayList<String>(4);
+	private List<String> packNames = new ArrayList<>(4);
 	
 	@SideOnly(Side.CLIENT)
 	private void refresh(){

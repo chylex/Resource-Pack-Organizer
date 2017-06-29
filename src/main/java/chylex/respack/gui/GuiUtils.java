@@ -20,25 +20,22 @@ public final class GuiUtils{
 		Gui.drawModalRectWithCustomSizedTexture(x, y, 0F, 0F, 32, 32, 32F, 32F);
 		GlStateManager.disableBlend();
 		
-		int i2;
-
-		if ((mc.gameSettings.touchscreen||isSelected)&&entry.showHoverOverlay()){
+		if ((mc.gameSettings.touchscreen || isSelected) && entry.showHoverOverlay()){
 			Gui.drawRect(x, y, x+32, y+32, -1601138544);
 			GlStateManager.color(1F, 1F, 1F, 1F);
 		}
 		
 		String s = entry.getResourcePackName();
-		i2 = mc.fontRenderer.getStringWidth(s);
 		
-		if (i2 > 157){
+		if (mc.fontRenderer.getStringWidth(s) > 157){
 			s = mc.fontRenderer.trimStringToWidth(s, 157-mc.fontRenderer.getStringWidth("..."))+"...";
 		}
 		
 		mc.fontRenderer.drawStringWithShadow(s, x+32+2, y+1, 16777215);
-		List list = mc.fontRenderer.listFormattedStringToWidth(entry.getResourcePackDescription(), 157);
+		List<String> list = mc.fontRenderer.listFormattedStringToWidth(entry.getResourcePackDescription(), 157);
 		
-		for(int j2 = 0; j2 < 2 && j2 < list.size(); ++j2){
-			mc.fontRenderer.drawStringWithShadow((String)list.get(j2), x+32+2, y+12+10*j2, 8421504);
+		for(int index = 0; index < 2 && index < list.size(); ++index){
+			mc.fontRenderer.drawStringWithShadow(list.get(index), x+32+2, y+12+10*index, 8421504);
 		}
 	}
 }

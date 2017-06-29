@@ -3,7 +3,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiOptionButton;
@@ -269,14 +268,7 @@ public class GuiCustomResourcePacks extends GuiScreenResourcePacks{
 		}
 		
 		List<Entry> repositoryEntries = repository.getRepositoryEntries();
-		
-		for(Iterator<ResourcePackListEntryFound> iter = list.iterator(); iter.hasNext();){
-			ResourcePackListEntryFound listEntry = iter.next();
-			
-			if (listEntry.getResourcePackEntry() != null && repositoryEntries.contains(listEntry.getResourcePackEntry())){
-				iter.remove();
-			}
-		}
+		list.removeIf(listEntry -> listEntry.getResourcePackEntry() != null && repositoryEntries.contains(listEntry.getResourcePackEntry()));
 		
 		return list;
 	}

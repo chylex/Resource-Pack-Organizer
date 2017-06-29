@@ -48,7 +48,7 @@ public class ResourcePackListEntryFolder extends ResourcePackListEntryCustom{
 	}
 	
 	@Override
-	public boolean mousePressed(int p_148278_1_, int p_148278_2_, int p_148278_3_, int p_148278_4_, int p_148278_5_, int p_148278_6_){
+	public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY){
 		ownerScreen.moveToFolder(folder);
 		return true;
 	}
