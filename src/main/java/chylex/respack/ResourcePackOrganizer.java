@@ -20,7 +20,7 @@ import chylex.respack.gui.GuiCustomResourcePacks;
 import chylex.respack.render.RenderPackListOverlay;
 import chylex.respack.repository.ResourcePackRepositoryCustom;
 
-@Mod(modid = ResourcePackOrganizer.MODID, name = ResourcePackOrganizer.MODNAME, useMetadata = true, guiFactory = "chylex.respack.gui.GuiModConfig")
+@Mod(modid = ResourcePackOrganizer.MODID, name = ResourcePackOrganizer.MODNAME, useMetadata = true, dependencies = "required-after:forge@[14.21.1.2387,)", guiFactory = "chylex.respack.gui.GuiModConfig")
 public final class ResourcePackOrganizer{
 	public static final String MODID = "resourcepackorganizer";
 	public static final String MODNAME = "Resource Pack Organizer";
