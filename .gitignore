@@ -2,10 +2,15 @@ bin/
 build/
 eclipse/
 run/
+out/
 .gradle/
 .settings/
+.updateclasses/
+.idea/
 .classpath
 .project
 .DS_Store
-Thumbs.db
 *.launch
+*.iml
+Thumbs.db
+!run/eula.txt

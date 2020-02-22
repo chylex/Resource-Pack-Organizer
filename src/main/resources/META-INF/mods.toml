@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "[31,)"
+
+authors = "chylex"
+displayURL = "https://respacks.chylex.com"
+issueTrackerURL = "https://github.com/chylex/Resource-Pack-Organizer/issues"
+
+[[mods]]
+modId = "resourcepackorganizer"
+version = "1.1.0"
+displayName = "Resource Pack Organizer"
+description = '''
+Enhances the Resource Pack menu by adding folder support for easier pack organization, ability to search packs by name or description, new sorting options, and quick refresh button directly in the GUI.
+
+The mod uses a folder icon by FatCow under the CC BY 3.0 US license: http://fatcow.com/free-icons
+'''
+
+[[dependencies.resourcepackorganizer]]
+    modId = "minecraft"
+    mandatory = true
+    versionRange = "[1.15.2]"
+    ordering = "NONE"
+    side = "BOTH"
+
+[[dependencies.resourcepackorganizer]]
+    modId = "forge"
+    mandatory = true
+    versionRange = "[31.1.0,)"
+    ordering = "NONE"
+    side = "BOTH"

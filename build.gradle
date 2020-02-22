@@ -1,43 +1,78 @@
 buildscript{
     repositories{
+        maven{ url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven{
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
+        mavenCentral()
     }
     
     dependencies{
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'eclipse'
 
-sourceCompatibility = targetCompatibility = 1.8
+def mcversion = "1.15.2"
+def forgeversion = "31.1.14"
 
-compileJava{
-    sourceCompatibility = targetCompatibility = 1.8
-}
+def prefixName = 'displayName = '
+def prefixVersion = 'version = '
+
+def metaLines = file('src/main/resources/META-INF/mods.toml').readLines()
+def metaName = metaLines.find { line -> line.startsWith(prefixName) }.substring(prefixName.length())[1..-2]
+def metaVersion = metaLines.find { line -> line.startsWith(prefixVersion) }.substring(prefixVersion.length())[1..-2]
+
+group = 'chylex.respack'
+version = metaVersion
+archivesBaseName = metaName.replaceAll('\\s', '')
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft{
-    version = "1.12-14.21.1.2387"
-    runDir = "run"
-    mappings = "snapshot_20170624"
-    makeObfSourceJar = false
+    mappings channel: 'snapshot', version: '20200222-1.15.1'
+    
+    runs{
+        client{
+            workingDirectory file('run')
+            
+            mods{
+                resourcepackorganizer{
+                    source sourceSets.main
+                }
+            }
+        }
+        
+        server{
+            workingDirectory file('run')
+            
+            mods{
+                resourcepackorganizer{
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-String modname = ""
-String modver = ""
-
-processResources{
-    File info = new File(sourceSets.main.resources.srcDirs.iterator().next(), "mcmod.info")
-    def slurp = new groovy.json.JsonSlurper()
-    def data = slurp.parseText(info.getText())[0]
-    modname = data.name.replaceAll(" ", "")
-    modver = data.version
+dependencies{
+    minecraft 'net.minecraftforge:forge:' + mcversion + '-' + forgeversion
 }
 
 jar{
-    archiveName = modname+"  MC-"+project.minecraft.version+"  v"+modver+".jar"
+    archiveName = archivesBaseName + '-' + mcversion + '-v' + version + '.jar'
+
+    manifest{
+        attributes([
+            'Specification-Title'  : 'resourcepackorganizer',
+            'Specification-Version': '1',
+            'Specification-Vendor' : 'chylex',
+
+            'Implementation-Title'  : metaName,
+            'Implementation-Version': metaVersion,
+            'Implementation-Vendor' : 'chylex',
+
+            'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
