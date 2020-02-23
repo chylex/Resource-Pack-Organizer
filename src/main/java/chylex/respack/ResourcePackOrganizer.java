@@ -9,6 +9,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
 
 @Mod(ResourcePackOrganizer.MODID)
 public final class ResourcePackOrganizer{
@@ -32,6 +33,6 @@ public final class ResourcePackOrganizer{
 	
 	@SubscribeEvent
 	public void onDedicatedServerSetup(final FMLDedicatedServerSetupEvent e){
-		throw new IllegalStateException("Resource Pack Organizer cannot be installed on a server!");
+		LogManager.getLogger(this).warn("Resource Pack Organizer is deactivated when installed on a dedicated server");
 	}
 }
