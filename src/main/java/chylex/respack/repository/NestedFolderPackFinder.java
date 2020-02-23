@@ -11,18 +11,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.Map;
+import static chylex.respack.repository.ResourcePackUtils.isFolderBasedPack;
+import static chylex.respack.repository.ResourcePackUtils.wrap;
 
 @OnlyIn(Dist.CLIENT)
 public final class NestedFolderPackFinder implements IPackFinder{
 	public static void register(){
 		Minecraft mc = Minecraft.getInstance();
 		mc.getResourcePackList().addPackFinder(new NestedFolderPackFinder(mc.getFileResourcePacks()));
-	}
-	
-	private static final File[] EMPTY_FILE_ARRAY = new File[0];
-	
-	private static File[] wrap(File[] filesOrNull){
-		return filesOrNull == null ? EMPTY_FILE_ARRAY : filesOrNull;
 	}
 	
 	private final File root;
@@ -35,21 +31,15 @@ public final class NestedFolderPackFinder implements IPackFinder{
 	
 	@Override
 	public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, IFactory<T> packInfoFactory){
-		File[] folders = root.listFiles(File::isDirectory);
+		File[] folders = root.listFiles(ResourcePackUtils::isFolderButNotFolderBasedPack);
 		
 		for(File folder : wrap(folders)){
-			if (!isFolderPack(folder)){
-				processFolder(folder, nameToPackMap, packInfoFactory);
-			}
+			processFolder(folder, nameToPackMap, packInfoFactory);
 		}
 	}
 	
-	private boolean isFolderPack(File folder){
-		return new File(folder, "pack.mcmeta").exists();
-	}
-	
 	private <T extends ResourcePackInfo> void processFolder(File folder, Map<String, T> nameToPackMap, IFactory<T> packInfoFactory){
-		if (isFolderPack(folder)){
+		if (isFolderBasedPack(folder)){
 			addPack(folder, nameToPackMap, packInfoFactory);
 			return;
 		}

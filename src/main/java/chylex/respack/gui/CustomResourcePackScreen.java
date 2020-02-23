@@ -1,6 +1,9 @@
 package chylex.respack.gui;
+import chylex.respack.packs.ResourcePackFolderListEntry;
 import chylex.respack.packs.ResourcePackListProcessor;
+import chylex.respack.repository.ResourcePackUtils;
 import net.minecraft.client.GameSettings;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.IRenderable;
 import net.minecraft.client.gui.screen.ResourcePacksScreen;
@@ -17,16 +20,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import static chylex.respack.repository.ResourcePackUtils.wrap;
 
 @OnlyIn(Dist.CLIENT)
-public class CustomResourcePackScreen extends ResourcePacksScreen{
-	private ResourcePackListProcessor listProcessor;
+public final class CustomResourcePackScreen extends ResourcePacksScreen{
+	private final ResourcePackListProcessor listProcessor = new ResourcePackListProcessor(this::onFiltersUpdated);
 	private Comparator<ResourcePackEntry> currentSorter;
 	
 	private AvailableResourcePackList originalAvailablePacks;
 	private AvailableResourcePackListCustom customAvailablePacks;
 	private TextFieldWidget searchField;
+	
+	private File currentFolder = Minecraft.getInstance().getFileResourcePacks();
+	private boolean folderView = true;
 	
 	public CustomResourcePackScreen(Screen parentScreen, GameSettings settings){
 		super(parentScreen, settings);
@@ -69,11 +77,16 @@ public class CustomResourcePackScreen extends ResourcePacksScreen{
 			
 			if (getMinecraft().currentScreen == refreshed){
 				refreshed.searchField.setText(searchField.getText());
+				
+				if (currentFolder.exists()){
+					refreshed.moveToFolder(currentFolder);
+				}
 			}
 		}));
 		
 		searchField = new TextFieldWidget(font, width / 2 - 203, height - 46, 198, 16, searchField, "");
 		searchField.setCanLoseFocus(true);
+		searchField.setResponder(listProcessor::setFilter);
 		children.add(searchField);
 		
 		originalAvailablePacks = (AvailableResourcePackList)children.stream().filter(widget -> widget instanceof AvailableResourcePackList).findFirst().orElse(null);
@@ -85,30 +98,61 @@ public class CustomResourcePackScreen extends ResourcePacksScreen{
 		
 		children.remove(originalAvailablePacks);
 		children.add(customAvailablePacks = new AvailableResourcePackListCustom(originalAvailablePacks));
-		refreshListProcessor();
+		
+		listProcessor.setSorter(currentSorter == null ? (currentSorter = ResourcePackListProcessor.sortAZ) : currentSorter);
+		listProcessor.setFilter(searchField.getText());
 	}
 	
 	private Optional<Widget> findButton(String text){
 		return buttons.stream().filter(btn -> text.equals(btn.getMessage())).findFirst();
 	}
 	
-	private void refreshListProcessor(){
-		listProcessor = new ResourcePackListProcessor(new ArrayList<>(originalAvailablePacks.children()), customAvailablePacks.children());
-		listProcessor.setSorter(currentSorter == null ? (currentSorter = ResourcePackListProcessor.sortAZ) : currentSorter);
-		listProcessor.setFilter(searchField.getText().trim());
-		searchField.setResponder(listProcessor::setFilter);
-	}
-	
 	@Override
 	public void markChanged(){
 		super.markChanged();
-		refreshListProcessor();
+		onFiltersUpdated();
 	}
 	
-	// Public
+	// Processing
+	
+	private boolean notInRoot(){
+		return !currentFolder.equals(getMinecraft().getFileResourcePacks());
+	}
+	
+	private void onFiltersUpdated(){
+		List<ResourcePackEntry> folders = null;
+		
+		if (folderView){
+			folders = new ArrayList<>();
+			
+			if (notInRoot()){
+				folders.add(new ResourcePackFolderListEntry(customAvailablePacks, this, currentFolder.getParentFile(), true));
+			}
+			
+			for(File folder : wrap(currentFolder.listFiles(ResourcePackUtils::isFolderButNotFolderBasedPack))){
+				folders.add(new ResourcePackFolderListEntry(customAvailablePacks, this, folder));
+			}
+		}
+		
+		listProcessor.apply(originalAvailablePacks.children(), folders, customAvailablePacks.children());
+		
+		if (folderView){
+			customAvailablePacks.children().removeIf(entry -> {
+				if (entry instanceof ResourcePackFolderListEntry){
+					ResourcePackFolderListEntry folder = (ResourcePackFolderListEntry)entry;
+					return !folder.isUp && !currentFolder.equals(folder.folder.getParentFile());
+				}
+				
+				File file = ResourcePackUtils.determinePackFolder(entry.func_214418_e().getResourcePack());
+				return file == null ? notInRoot() : !currentFolder.equals(file.getParentFile());
+			});
+		}
+	}
 	
 	public void moveToFolder(File folder){
-		// TODO
+		currentFolder = folder;
+		onFiltersUpdated();
+		customAvailablePacks.setScrollAmount(0.0);
 	}
 	
 	// UI Overrides
