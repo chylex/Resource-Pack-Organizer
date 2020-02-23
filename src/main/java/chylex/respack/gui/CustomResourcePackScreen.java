@@ -60,17 +60,26 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 			btn.y = height - 26;
 		});
 		
-		addButton(new Button(width / 2 - 204, height - 26, 40, 20, "A-Z", btn -> {
+		addButton(new Button(width / 2 - 204, height - 26, 30, 20, "A-Z", btn -> {
 			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortAZ);
 		}));
 		
-		addButton(new Button(width / 2 - 204 + 44, height - 26, 40, 20, "Z-A", btn -> {
+		addButton(new Button(width / 2 - 204 + 34, height - 26, 30, 20, "Z-A", btn -> {
 			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortZA);
 		}));
 		
-		addButton(new Button(width / 2 - 74, height - 26, 70, 20, "Refresh", btn -> {
+		addButton(new Button(width / 2 - 132, height - 26, 68, 20, folderView ? "Folder View" : "Flat View", btn -> {
+			folderView = !folderView;
+			btn.setMessage(folderView ? "Folder View" : "Flat View");
+			
+			onFiltersUpdated();
+			customAvailablePacks.setScrollAmount(0.0);
+		}));
+		
+		addButton(new Button(width / 2 - 56, height - 26, 52, 20, "Refresh", btn -> {
 			CustomResourcePackScreen refreshed = new CustomResourcePackScreen(parentScreen, gameSettings);
 			refreshed.currentSorter = currentSorter;
+			refreshed.folderView = folderView;
 			
 			findButton(doneText).ifPresent(done -> done.onClick(-1, -1));
 			getMinecraft().displayGuiScreen(refreshed);
@@ -116,7 +125,7 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 	// Processing
 	
 	private boolean notInRoot(){
-		return !currentFolder.equals(getMinecraft().getFileResourcePacks());
+		return folderView && !currentFolder.equals(getMinecraft().getFileResourcePacks());
 	}
 	
 	private void onFiltersUpdated(){
