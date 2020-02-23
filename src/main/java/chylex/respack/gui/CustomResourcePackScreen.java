@@ -44,7 +44,7 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 	
 	@Override
 	protected void init(){
-		getMinecraft().keyboardListener.enableRepeatEvents(false);
+		getMinecraft().keyboardListener.enableRepeatEvents(true);
 		super.init();
 		
 		String openFolderText = I18n.format("resourcePack.openFolder");
