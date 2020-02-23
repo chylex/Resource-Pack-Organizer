@@ -64,6 +64,10 @@ dependencies{
 jar{
     archiveName = archivesBaseName + '-' + mcversion + '-v' + version + '.jar'
 
+    from('./'){
+        include 'LICENSE'
+    }
+
     manifest{
         attributes([
             'Specification-Title'  : 'resourcepackorganizer',
