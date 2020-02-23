@@ -156,6 +156,8 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 				return file == null ? notInRoot() : !currentFolder.equals(file.getParentFile());
 			});
 		}
+		
+		customAvailablePacks.setScrollAmount(customAvailablePacks.getScrollAmount());
 	}
 	
 	public void moveToFolder(File folder){
