@@ -80,6 +80,7 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 			CustomResourcePackScreen refreshed = new CustomResourcePackScreen(parentScreen, gameSettings);
 			refreshed.currentSorter = currentSorter;
 			refreshed.folderView = folderView;
+			refreshed.listProcessor.pauseCallback();
 			
 			findButton(doneText).ifPresent(done -> done.onClick(-1, -1));
 			getMinecraft().displayGuiScreen(refreshed);
@@ -87,10 +88,12 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 			if (getMinecraft().currentScreen == refreshed){
 				refreshed.searchField.setText(searchField.getText());
 				
-				if (currentFolder.exists()){
+				if (currentFolder.exists() && notInRoot()){
 					refreshed.moveToFolder(currentFolder);
 				}
 			}
+			
+			refreshed.listProcessor.resumeCallback();
 		}));
 		
 		searchField = new TextFieldWidget(font, width / 2 - 203, height - 46, 198, 16, searchField, "");
@@ -108,8 +111,10 @@ public final class CustomResourcePackScreen extends ResourcePacksScreen{
 		children.remove(originalAvailablePacks);
 		children.add(customAvailablePacks = new AvailableResourcePackListCustom(originalAvailablePacks));
 		
+		listProcessor.pauseCallback();
 		listProcessor.setSorter(currentSorter == null ? (currentSorter = ResourcePackListProcessor.sortAZ) : currentSorter);
 		listProcessor.setFilter(searchField.getText());
+		listProcessor.resumeCallback();
 	}
 	
 	private Optional<Widget> findButton(String text){

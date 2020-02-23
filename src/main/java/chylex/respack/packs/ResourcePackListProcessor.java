@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class ResourcePackListProcessor{
@@ -33,29 +34,46 @@ public final class ResourcePackListProcessor{
 	public static final Comparator<ResourcePackEntry> sortZA = (entry1, entry2) -> -String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1, true), nameSort(entry2, true));
 	
 	private final Runnable callback;
+	private int pauseCallback;
+	
 	private Comparator<ResourcePackEntry> sorter;
 	private Pattern textFilter;
+	private String lastTextFilter;
 	
 	public ResourcePackListProcessor(Runnable callback){
 		this.callback = callback;
 	}
 	
+	public void pauseCallback(){
+		++pauseCallback;
+	}
+	
+	public void resumeCallback(){
+		if (pauseCallback > 0){
+			--pauseCallback;
+			tryRunCallback();
+		}
+	}
+	
+	private void tryRunCallback(){
+		if (pauseCallback == 0){
+			callback.run();
+		}
+	}
+	
 	public void setSorter(Comparator<ResourcePackEntry> comparator){
 		this.sorter = comparator;
-		callback.run();
+		tryRunCallback();
 	}
 	
 	public void setFilter(String text){
 		text = StringUtils.trimToNull(text);
 		
-		if (text == null){
-			textFilter = null;
+		if (!Objects.equals(text, lastTextFilter)){
+			lastTextFilter = text;
+			textFilter = text == null ? null : Pattern.compile("\\Q" + text.replace("*", "\\E.*\\Q") + "\\E", Pattern.CASE_INSENSITIVE);
+			tryRunCallback();
 		}
-		else{
-			textFilter = Pattern.compile("\\Q" + text.replace("*", "\\E.*\\Q") + "\\E", Pattern.CASE_INSENSITIVE);
-		}
-		
-		callback.run();
 	}
 	
 	public void apply(List<ResourcePackEntry> sourceList, List<ResourcePackEntry> extraList, List<ResourcePackEntry> targetList){
