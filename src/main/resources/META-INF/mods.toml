@@ -26,6 +26,6 @@ The mod uses a folder icon by FatCow under the CC BY 3.0 US license: http://fatc
 [[dependencies.resourcepackorganizer]]
     modId = "forge"
     mandatory = true
-    versionRange = "[31.1.0,)"
+    versionRange = "[31.0.0,)"
     ordering = "NONE"
     side = "BOTH"
