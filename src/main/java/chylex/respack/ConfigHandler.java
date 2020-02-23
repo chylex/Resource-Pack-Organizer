@@ -20,7 +20,7 @@ public final class ConfigHandler{
 		EnumGetMethod getter = EnumGetMethod.NAME_IGNORECASE;
 		
 		DISPLAY_POSITION = builder.defineEnum("displayPosition", DisplayPosition.DISABLED, getter);
-		DISPLAY_COLOR = builder.defineEnum("displayColor", TextFormatting.WHITE, getter, value -> getter.validate(value, TextFormatting.class) && getter.get(value, TextFormatting.class).isColor());
+		DISPLAY_COLOR = builder.defineEnum("displayColor", TextFormatting.WHITE, getter, value -> value != null && getter.validate(value, TextFormatting.class) && getter.get(value, TextFormatting.class).isColor());
 		
 		SPEC = builder.build();
 		
