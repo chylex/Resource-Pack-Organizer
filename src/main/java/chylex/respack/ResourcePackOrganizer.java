@@ -1,5 +1,8 @@
 package chylex.respack;
+import chylex.respack.repository.NestedFolderPackFinder;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -14,6 +17,7 @@ public final class ResourcePackOrganizer{
 	public ResourcePackOrganizer(){
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, ConfigHandler.SPEC);
+		DistExecutor.runWhenOn(Dist.CLIENT, () -> NestedFolderPackFinder::register);
 	}
 	
 	@SubscribeEvent
