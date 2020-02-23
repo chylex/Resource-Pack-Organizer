@@ -5,36 +5,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-public class ResourcePackListProcessor{
+public final class ResourcePackListProcessor{
 	private static String name(ResourcePackEntry entry){
-		if (entry != null){
-			return entry.func_214418_e().getName();
-		}
-		else{
-			return "<INVALID>";
-		}
+		return entry == null ? "<INVALID>" : entry.func_214418_e().getTitle().getString();
+	}
+	
+	private static String description(ResourcePackEntry entry){
+		return entry == null ? "<INVALID>" : entry.func_214418_e().getDescription().getString();
 	}
 	
 	private static String nameSort(ResourcePackEntry entry, boolean reverse){
 		String pfx1 = !reverse ? "a" : "z";
-		String pfx2 = !reverse ? "b" : "z";
-		String pfx3 = !reverse ? "z" : "a";
+		String pfx2 = !reverse ? "b" : "y";
+		String pfx3 = !reverse ? "x" : "a";
 		
-		if (entry != null){
-			return pfx3 + entry.func_214418_e().getName();
-		}
-		else{
-			return pfx3 + "<INVALID>";
-		}
-	}
-	
-	private static String description(ResourcePackEntry entry){
-		if (entry != null){
-			return entry.func_214418_e().getDescription().getFormattedText();
-		}
-		else{
-			return "<INVALID>";
-		}
+		return pfx3 + name(entry);
 	}
 	
 	public static final Comparator<ResourcePackEntry> sortAZ = (entry1, entry2) -> String.CASE_INSENSITIVE_ORDER.compare(nameSort(entry1, false), nameSort(entry2, false));
@@ -57,7 +42,9 @@ public class ResourcePackListProcessor{
 	}
 	
 	public void setFilter(String text){
-		if (text == null || text.isEmpty()){
+		text = StringUtils.trimToNull(text);
+		
+		if (text == null){
 			textFilter = null;
 		}
 		else{
