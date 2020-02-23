@@ -9,6 +9,7 @@ issueTrackerURL = "https://github.com/chylex/Resource-Pack-Organizer/issues"
 modId = "resourcepackorganizer"
 version = "1.1.0"
 displayName = "Resource Pack Organizer"
+logoFile = "rpo_logo.png"
 description = '''
 Enhances the Resource Pack menu by adding folder support for easier pack organization, ability to search packs by name or description, new sorting options, and quick refresh button directly in the GUI.
 
