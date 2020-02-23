@@ -60,6 +60,18 @@ public class CustomResourcePackScreen extends ResourcePacksScreen{
 			listProcessor.setSorter(currentSorter = ResourcePackListProcessor.sortZA);
 		}));
 		
+		addButton(new Button(width / 2 - 74, height - 26, 70, 20, "Refresh", btn -> {
+			CustomResourcePackScreen refreshed = new CustomResourcePackScreen(parentScreen, gameSettings);
+			refreshed.currentSorter = currentSorter;
+			
+			findButton(doneText).ifPresent(done -> done.onClick(-1, -1));
+			getMinecraft().displayGuiScreen(refreshed);
+			
+			if (getMinecraft().currentScreen == refreshed){
+				refreshed.searchField.setText(searchField.getText());
+			}
+		}));
+		
 		searchField = new TextFieldWidget(font, width / 2 - 203, height - 46, 198, 16, searchField, "");
 		searchField.setCanLoseFocus(true);
 		children.add(searchField);
