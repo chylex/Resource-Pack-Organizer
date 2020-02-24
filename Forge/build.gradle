@@ -64,7 +64,7 @@ dependencies{
 jar{
     archiveName = archivesBaseName + '-' + mcversion + '-v' + version + '.jar'
 
-    from('./'){
+    from('../'){
         include 'LICENSE'
     }
 

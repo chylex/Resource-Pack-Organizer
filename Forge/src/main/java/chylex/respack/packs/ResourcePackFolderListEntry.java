@@ -5,7 +5,6 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.list.AbstractResourcePackList;
 import net.minecraft.client.gui.widget.list.AbstractResourcePackList.ResourcePackEntry;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public final class ResourcePackFolderListEntry extends ResourcePackEntry{
-	private static final ResourceLocation vanillaResource = new ResourceLocation("textures/gui/resource_packs.png");
 	public static final String upText = "..";
 	
 	private final CustomResourcePackScreen ownerScreen;
