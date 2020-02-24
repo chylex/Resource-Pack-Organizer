@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "chylex.respack.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "HookOpenScreen",
+    "ExposeAbstractFileResourcePack",
+    "ExposeFormat3ResourcePack",
+    "ExposeFormat4ResourcePack"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
