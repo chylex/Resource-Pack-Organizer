@@ -59,7 +59,6 @@ public final class CustomResourcePackScreen extends PackScreen{
 	private final ResourcePackListProcessor listProcessor = new ResourcePackListProcessor(this::onFiltersUpdated);
 	private Comparator<ResourcePackEntry> currentSorter;
 	
-	private final ResourcePacksScreen originalScreen;
 	private ResourcePackList originalAvailablePacks;
 	private AvailableResourcePackListCustom customAvailablePacks;
 	private TextFieldWidget searchField;
@@ -69,7 +68,6 @@ public final class CustomResourcePackScreen extends PackScreen{
 	
 	public CustomResourcePackScreen(final ResourcePacksScreen original){
 		super(original.field_238888_r_, (TranslationTextComponent)original.getTitle(), patchPackLoadingManager(original), original.field_241817_w_);
-		this.originalScreen = original;
 	}
 	
 	// Components
@@ -109,23 +107,14 @@ public final class CustomResourcePackScreen extends PackScreen{
 		}));
 		
 		addButton(new Button(width / 2 - 56, height - 26, 52, 20, TEXT_REFRESH, btn -> {
-			final CustomResourcePackScreen refreshed = new CustomResourcePackScreen(originalScreen);
-			refreshed.currentSorter = currentSorter;
-			refreshed.folderView = folderView;
-			refreshed.listProcessor.pauseCallback();
+			onClose();
+			getMinecraft().displayGuiScreen(this);
 			
-			findButton(doneText).ifPresent(done -> done.onClick(-1, -1));
-			getMinecraft().displayGuiScreen(refreshed);
+			func_238906_l_();
+			customAvailablePacks.refresh(originalAvailablePacks);
 			
-			if (getMinecraft().currentScreen == refreshed){
-				refreshed.searchField.setText(searchField.getText());
-				
-				if (currentFolder.exists() && notInRoot()){
-					refreshed.moveToFolder(currentFolder);
-				}
-			}
-			
-			refreshed.listProcessor.resumeCallback();
+			onFiltersUpdated();
+			customAvailablePacks.setScrollAmount(0.0);
 		}));
 		
 		searchField = new TextFieldWidget(font, width / 2 - 203, height - 46, 198, 16, searchField, StringTextComponent.EMPTY);
