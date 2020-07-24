@@ -1,6 +1,7 @@
 package chylex.respack.gui;
 import chylex.respack.ConfigHandler;
 import chylex.respack.ConfigHandler.DisplayPosition;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.ResourcePacksScreen;
@@ -50,15 +51,15 @@ public final class RenderPackListOverlay{
 		MinecraftForge.EVENT_BUS.unregister(instance);
 	}
 	
-	private List<String> packNames = new ArrayList<>(4);
+	private final List<String> packNames = new ArrayList<>(4);
 	
 	private void refresh(){
 		packNames.clear();
 		
-		List<ClientResourcePackInfo> packs = new ArrayList<>(mc.getResourcePackList().getEnabledPacks());
+		final List<ClientResourcePackInfo> packs = new ArrayList<>(mc.getResourcePackList().getEnabledPacks());
 		Collections.reverse(packs);
 		
-		for(ClientResourcePackInfo pack : packs){
+		for(final ClientResourcePackInfo pack : packs){
 			if (!pack.isAlwaysEnabled()){
 				packNames.add(StringUtils.removeEndIgnoreCase(pack.getTitle().getString(), ".zip"));
 			}
@@ -66,45 +67,47 @@ public final class RenderPackListOverlay{
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST, receiveCanceled = true)
-	public void onGuiOpen(GuiOpenEvent e){
+	public void onGuiOpen(final GuiOpenEvent e){
 		if (mc.currentScreen instanceof ResourcePacksScreen){
 			refresh();
 		}
 	}
 	
 	@SubscribeEvent
-	public void onRenderGameOverlay(RenderGameOverlayEvent.Post e){
+	public void onRenderGameOverlay(final RenderGameOverlayEvent.Post e){
 		if (e.getType() == ElementType.TEXT && !packNames.isEmpty()){
-			DisplayPosition position = ConfigHandler.DISPLAY_POSITION.get();
+			final DisplayPosition position = ConfigHandler.DISPLAY_POSITION.get();
 			
 			if ((position == TOP_LEFT || position == TOP_RIGHT) && mc.gameSettings.showDebugInfo){
 				return;
 			}
 			
-			FontRenderer font = mc.fontRenderer;
-			int color = Objects.requireNonNull(ConfigHandler.DISPLAY_COLOR.get().getColor());
+			final FontRenderer font = mc.fontRenderer;
+			final MatrixStack matrix = e.getMatrixStack();
+			final int color = Objects.requireNonNull(ConfigHandler.DISPLAY_COLOR.get().getColor());
 			
-			int edgeDist = 3, topOffset = 2;
-			int ySpacing = font.FONT_HEIGHT;
+			final int edgeDist = 3;
+			final int topOffset = 2;
+			final int ySpacing = font.FONT_HEIGHT;
 			
-			int x = position == TOP_LEFT || position == BOTTOM_LEFT ? edgeDist : e.getWindow().getScaledWidth() - edgeDist;
-			int y = position == TOP_LEFT || position == TOP_RIGHT   ? edgeDist : e.getWindow().getScaledHeight() - edgeDist - topOffset - ySpacing * (1 + packNames.size());
-			boolean alignRight = position == TOP_RIGHT || position == BOTTOM_RIGHT;
+			final int x = position == TOP_LEFT || position == BOTTOM_LEFT ? edgeDist : e.getWindow().getScaledWidth() - edgeDist;
+			final int y = position == TOP_LEFT || position == TOP_RIGHT   ? edgeDist : e.getWindow().getScaledHeight() - edgeDist - topOffset - ySpacing * (1 + packNames.size());
+			final boolean alignRight = position == TOP_RIGHT || position == BOTTOM_RIGHT;
 			
-			renderText(font, TextFormatting.UNDERLINE + "Resource Packs", x, y, color, alignRight);
+			renderText(matrix, font, TextFormatting.UNDERLINE + "Resource Packs", x, y, color, alignRight);
 			
 			for(int line = 0; line < packNames.size(); line++){
-				renderText(font, packNames.get(line), x, y + topOffset + (line + 1) * ySpacing, color, alignRight);
+				renderText(matrix, font, packNames.get(line), x, y + topOffset + (line + 1) * ySpacing, color, alignRight);
 			}
 		}
 	}
 	
-	private static void renderText(FontRenderer renderer, String line, int x, int y, int color, boolean alignRight){
+	private static void renderText(final MatrixStack matrix, final FontRenderer renderer, final String line, final int x, final int y, final int color, final boolean alignRight){
 		if (color == 0){
-			renderer.drawString(line, alignRight ? x - renderer.getStringWidth(line) : x, y, color);
+			renderer.drawString(matrix, line, alignRight ? x - renderer.getStringWidth(line) : x, y, color);
 		}
 		else{
-			renderer.drawStringWithShadow(line, alignRight ? x - renderer.getStringWidth(line) : x, y, color);
+			renderer.drawStringWithShadow(matrix, line, alignRight ? x - renderer.getStringWidth(line) : x, y, color);
 		}
 	}
 }

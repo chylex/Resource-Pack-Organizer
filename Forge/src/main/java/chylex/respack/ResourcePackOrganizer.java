@@ -18,16 +18,16 @@ public final class ResourcePackOrganizer{
 	public ResourcePackOrganizer(){
 		FMLJavaModLoadingContext.get().getModEventBus().register(this);
 		ModLoadingContext.get().registerConfig(Type.CLIENT, ConfigHandler.SPEC);
-		DistExecutor.runWhenOn(Dist.CLIENT, () -> NestedFolderPackFinder::register);
+		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> NestedFolderPackFinder::register);
 	}
 	
 	@SubscribeEvent
-	public void onConfigLoading(ModConfig.Loading e){
+	public void onConfigLoading(final ModConfig.Loading e){
 		ConfigHandler.onConfigUpdated();
 	}
 	
 	@SubscribeEvent
-	public void onConfigReloading(ModConfig.Reloading e){
+	public void onConfigReloading(final ModConfig.Reloading e){
 		ConfigHandler.onConfigUpdated();
 	}
 	

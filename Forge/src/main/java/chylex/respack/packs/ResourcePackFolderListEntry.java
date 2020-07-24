@@ -1,10 +1,16 @@
 package chylex.respack.packs;
 import chylex.respack.gui.CustomResourcePackScreen;
+import chylex.respack.packs.ResourcePackFolder.PackEntry;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.list.AbstractResourcePackList;
-import net.minecraft.client.gui.widget.list.AbstractResourcePackList.ResourcePackEntry;
+import net.minecraft.client.gui.screen.PackLoadingManager.IPack;
+import net.minecraft.client.gui.widget.list.ResourcePackList;
+import net.minecraft.client.gui.widget.list.ResourcePackList.ResourcePackEntry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -13,55 +19,65 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public final class ResourcePackFolderListEntry extends ResourcePackEntry{
-	public static final String upText = "..";
+	public static final String UP_TEXT = "..";
+	
+	private static IPack getPack(final File folder, final boolean isUp){
+		final ITextComponent title = new StringTextComponent(isUp ? UP_TEXT : folder.getName());
+		final ITextComponent description = new StringTextComponent(isUp ? "(Back)" : "(Folder)");
+		final ResourcePackFolder entry = new ResourcePackFolder("RPO/" + folder.getAbsolutePath(), title, description);
+		return new PackEntry(entry);
+	}
 	
 	private final CustomResourcePackScreen ownerScreen;
 	public final File folder;
 	public final boolean isUp;
 	
-	public ResourcePackFolderListEntry(AbstractResourcePackList list, CustomResourcePackScreen ownerScreen, File folder, boolean isUp){
-		super(list, ownerScreen, new ResourcePackFolder("RPO/" + folder.getAbsolutePath(), new StringTextComponent(isUp ? upText : folder.getName()), new StringTextComponent(isUp ? "(Back)" : "(Folder)")));
+	public ResourcePackFolderListEntry(final ResourcePackList list, final CustomResourcePackScreen ownerScreen, final File folder, final boolean isUp){
+		super(Minecraft.getInstance(), list, ownerScreen, getPack(folder, isUp));
 		this.ownerScreen = ownerScreen;
 		this.folder = folder;
 		this.isUp = isUp;
 	}
 	
-	public ResourcePackFolderListEntry(AbstractResourcePackList list, CustomResourcePackScreen ownerScreen, File folder){
+	public ResourcePackFolderListEntry(final ResourcePackList list, final CustomResourcePackScreen ownerScreen, final File folder){
 		this(list, ownerScreen, folder, false);
 	}
 	
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button){
+	public boolean mouseClicked(final double mouseX, final double mouseY, final int button){
 		ownerScreen.moveToFolder(folder);
 		return true;
 	}
 	
 	@Override
-	public void render(int index, int y, int x, int w, int h, int parentX, int parentY, boolean isMouseOver, float partialTicks){
-		func_214419_a();
+	public void render(final MatrixStack matrix, final int index, final int y, final int x, final int w, final int h, final int mouseX, final int mouseY, final boolean isMouseOver, final float partialTicks){
+		field_214431_d.func_230461_a_(field_214428_a.getTextureManager());
 		RenderSystem.color4f(1F, 1F, 1F, 1F);
-		AbstractGui.blit(x, y, 0F, 0F, 32, 32, 32, 32);
+		AbstractGui.blit(matrix, x, y, 0F, 0F, 32, 32, 32, 32);
 		
-		String title = func_214416_d();
-		String desc = func_214420_c();
+		final ITextComponent title = field_214431_d.func_230462_b_();
+		final ITextProperties desc = field_214431_d.func_238874_e_();
 		
 		if (field_214428_a.gameSettings.touchscreen || isMouseOver){
-			AbstractGui.fill(x, y, x + 32, y + 32, -1601138544);
+			AbstractGui.fill(matrix, x, y, x + 32, y + 32, -1601138544);
 			RenderSystem.color4f(1F, 1F, 1F, 1F);
 		}
 		
-		FontRenderer fontRenderer = field_214428_a.fontRenderer;
-		int titleWidth = fontRenderer.getStringWidth(title);
+		final FontRenderer fontRenderer = field_214428_a.fontRenderer;
+		final int titleWidth = fontRenderer.func_238414_a_(title);
 		
 		if (titleWidth > 157){
-			title = fontRenderer.trimStringToWidth(title, 157 - fontRenderer.getStringWidth("...")) + "...";
+			final ITextProperties shortenedTitle = ITextProperties.func_240655_a_(fontRenderer.func_238417_a_(title, 157 - fontRenderer.getStringWidth("...")), ITextProperties.func_240652_a_("..."));
+			fontRenderer.func_238407_a_(matrix, shortenedTitle, x + 32 + 2, y + 1, 16777215);
+		}
+		else{
+			fontRenderer.func_238407_a_(matrix, title, x + 32 + 2, y + 1, 16777215);
 		}
 		
-		fontRenderer.drawStringWithShadow(title, x + 32 + 2, y + 1, 16777215);
-		List<String> lines = fontRenderer.listFormattedStringToWidth(desc, 157);
+		final List<ITextProperties> lines = fontRenderer.func_238425_b_(desc, 157);
 		
 		for(int line = 0; line < 2 && line < lines.size(); ++line){
-			fontRenderer.drawStringWithShadow(lines.get(line), x + 32 + 2, y + 12 + 10 * line, 8421504);
+			fontRenderer.func_238407_a_(matrix, lines.get(line), x + 32 + 2, y + 12 + 10 * line, 8421504);
 		}
 	}
 }

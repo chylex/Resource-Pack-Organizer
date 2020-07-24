@@ -16,8 +16,8 @@ public final class ConfigHandler{
 	public static EnumValue<TextFormatting> DISPLAY_COLOR;
 	
 	static{
-		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
-		EnumGetMethod getter = EnumGetMethod.NAME_IGNORECASE;
+		final ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+		final EnumGetMethod getter = EnumGetMethod.NAME_IGNORECASE;
 		
 		DISPLAY_POSITION = builder.defineEnum("displayPosition", DisplayPosition.DISABLED, getter);
 		DISPLAY_COLOR = builder.defineEnum("displayColor", TextFormatting.WHITE, getter, value -> value != null && getter.validate(value, TextFormatting.class) && getter.get(value, TextFormatting.class).isColor());
@@ -25,15 +25,15 @@ public final class ConfigHandler{
 		SPEC = builder.build();
 		
 		try{
-			String fixedComment = "Allowed Values: " + Arrays.stream(TextFormatting.values()).filter(TextFormatting::isColor).map(Enum::name).collect(Collectors.joining(", "));
+			final String fixedComment = "Allowed Values: " + Arrays.stream(TextFormatting.values()).filter(TextFormatting::isColor).map(Enum::name).collect(Collectors.joining(", "));
 			
-			Object o = SPEC.get("displayColor");
-			Field f = o.getClass().getDeclaredField("comment");
+			final Object o = SPEC.get("displayColor");
+			final Field f = o.getClass().getDeclaredField("comment");
 			f.setAccessible(true);
 			
 			FieldUtils.removeFinalModifier(f, true);
 			f.set(o, fixedComment);
-		}catch(Throwable ignored){}
+		}catch(final Throwable ignored){}
 	}
 	
 	public enum DisplayPosition{

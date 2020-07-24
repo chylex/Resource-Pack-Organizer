@@ -1,5 +1,5 @@
 package chylex.respack.packs;
-import net.minecraft.client.gui.widget.list.AbstractResourcePackList.ResourcePackEntry;
+import net.minecraft.client.gui.widget.list.ResourcePackList.ResourcePackEntry;
 import org.apache.commons.lang3.StringUtils;
 import java.util.Comparator;
 import java.util.List;
@@ -8,21 +8,21 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public final class ResourcePackListProcessor{
-	private static String name(ResourcePackEntry entry){
-		return entry == null ? "<INVALID>" : entry.func_214418_e().getTitle().getString();
+	private static String name(final ResourcePackEntry entry){
+		return entry == null ? "<INVALID>" : entry.field_214431_d.func_230462_b_().getString();
 	}
 	
-	private static String description(ResourcePackEntry entry){
-		return entry == null ? "<INVALID>" : entry.func_214418_e().getDescription().getString();
+	private static String description(final ResourcePackEntry entry){
+		return entry == null ? "<INVALID>" : entry.field_214431_d.func_230463_c_().getString();
 	}
 	
-	private static String nameSort(ResourcePackEntry entry, boolean reverse){
-		String pfx1 = !reverse ? "a" : "z";
-		String pfx2 = !reverse ? "b" : "y";
-		String pfx3 = !reverse ? "x" : "a";
+	private static String nameSort(final ResourcePackEntry entry, final boolean reverse){
+		final String pfx1 = !reverse ? "a" : "z";
+		final String pfx2 = !reverse ? "b" : "y";
+		final String pfx3 = !reverse ? "x" : "a";
 		
 		if (entry instanceof ResourcePackFolderListEntry){
-			ResourcePackFolderListEntry folder = (ResourcePackFolderListEntry)entry;
+			final ResourcePackFolderListEntry folder = (ResourcePackFolderListEntry)entry;
 			return (folder.isUp ? pfx1 : pfx2) + name(folder); // sort folders first
 		}
 		else{
@@ -40,7 +40,7 @@ public final class ResourcePackListProcessor{
 	private Pattern textFilter;
 	private String lastTextFilter;
 	
-	public ResourcePackListProcessor(Runnable callback){
+	public ResourcePackListProcessor(final Runnable callback){
 		this.callback = callback;
 	}
 	
@@ -61,7 +61,7 @@ public final class ResourcePackListProcessor{
 		}
 	}
 	
-	public void setSorter(Comparator<ResourcePackEntry> comparator){
+	public void setSorter(final Comparator<ResourcePackEntry> comparator){
 		this.sorter = comparator;
 		tryRunCallback();
 	}
@@ -76,7 +76,7 @@ public final class ResourcePackListProcessor{
 		}
 	}
 	
-	public void apply(List<ResourcePackEntry> sourceList, List<ResourcePackEntry> extraList, List<ResourcePackEntry> targetList){
+	public void apply(final List<ResourcePackEntry> sourceList, final List<ResourcePackEntry> extraList, final List<ResourcePackEntry> targetList){
 		targetList.clear();
 		addMatching(sourceList, targetList);
 		
@@ -89,15 +89,15 @@ public final class ResourcePackListProcessor{
 		}
 	}
 	
-	private void addMatching(List<ResourcePackEntry> source, List<ResourcePackEntry> target){
-		for(ResourcePackEntry entry : source){
+	private void addMatching(final List<ResourcePackEntry> source, final List<ResourcePackEntry> target){
+		for(final ResourcePackEntry entry : source){
 			if (checkFilter(name(entry)) || checkFilter(description(entry))){
 				target.add(entry);
 			}
 		}
 	}
 	
-	private boolean checkFilter(String entryText){
-		return textFilter == null || entryText.equals(ResourcePackFolderListEntry.upText) || textFilter.matcher(entryText.toLowerCase(Locale.ENGLISH)).find();
+	private boolean checkFilter(final String entryText){
+		return textFilter == null || entryText.equals(ResourcePackFolderListEntry.UP_TEXT) || textFilter.matcher(entryText.toLowerCase(Locale.ENGLISH)).find();
 	}
 }

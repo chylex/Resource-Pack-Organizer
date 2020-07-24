@@ -19,7 +19,7 @@ The mod uses a folder icon by FatCow under the CC BY 3.0 US license: http://fatc
 [[dependencies.resourcepackorganizer]]
     modId = "minecraft"
     mandatory = true
-    versionRange = "[1.15.2]"
+    versionRange = "[1.16,1.17)"
     ordering = "NONE"
     side = "BOTH"
 

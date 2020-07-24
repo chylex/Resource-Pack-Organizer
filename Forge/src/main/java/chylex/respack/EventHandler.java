@@ -13,12 +13,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 @EventBusSubscriber(value = Dist.CLIENT, modid = ResourcePackOrganizer.MODID)
 public final class EventHandler{
 	@SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-	public static void onGuiOpen(GuiOpenEvent e){
-		Minecraft mc = Minecraft.getInstance();
-		Screen gui = e.getGui();
+	public static void onGuiOpen(final GuiOpenEvent e){
+		final Minecraft mc = Minecraft.getInstance();
+		final Screen gui = e.getGui();
 		
 		if (gui != null && gui.getClass() == ResourcePacksScreen.class && mc.currentScreen instanceof OptionsScreen && !Screen.hasAltDown()){
-			e.setGui(new CustomResourcePackScreen(mc.currentScreen, mc.gameSettings));
+			e.setGui(new CustomResourcePackScreen((ResourcePacksScreen)gui));
 		}
 	}
 }
