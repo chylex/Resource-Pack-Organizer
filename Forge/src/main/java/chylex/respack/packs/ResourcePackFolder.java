@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import javax.annotation.Nonnull;
 
 @OnlyIn(Dist.CLIENT)
 public final class ResourcePackFolder extends ResourcePackInfo{
@@ -24,26 +25,31 @@ public final class ResourcePackFolder extends ResourcePackInfo{
 		}
 		
 		@Override
+		@Nonnull
 		public ResourceLocation func_241868_a(){
 			return folderResource;
 		}
 		
 		@Override
+		@Nonnull
 		public PackCompatibility func_230460_a_(){
 			return pack.getCompatibility();
 		}
 		
 		@Override
+		@Nonnull
 		public ITextComponent func_230462_b_(){
 			return pack.getTitle();
 		}
 		
 		@Override
+		@Nonnull
 		public ITextComponent func_230463_c_(){
 			return pack.getDescription();
 		}
 		
 		@Override
+		@Nonnull
 		public IPackNameDecorator func_230464_d_(){
 			return pack.func_232614_i_();
 		}

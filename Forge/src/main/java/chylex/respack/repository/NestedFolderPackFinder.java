@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackInfo.IFactory;
 import net.minecraft.resources.ResourcePackInfo.Priority;
 import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.function.Consumer;
 import static chylex.respack.repository.ResourcePackUtils.isFolderBasedPack;
@@ -28,7 +29,7 @@ public final class NestedFolderPackFinder implements IPackFinder{
 	}
 	
 	@Override
-	public void func_230230_a_(final Consumer<ResourcePackInfo> packInfoConsumer, final IFactory packInfoFactory){
+	public void func_230230_a_(final @Nonnull Consumer<ResourcePackInfo> packInfoConsumer, final @Nonnull IFactory packInfoFactory){
 		final File[] folders = root.listFiles(ResourcePackUtils::isFolderButNotFolderBasedPack);
 		
 		for(final File folder : wrap(folders)){

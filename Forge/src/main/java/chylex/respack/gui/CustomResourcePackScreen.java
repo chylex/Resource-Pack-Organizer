@@ -18,6 +18,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -128,7 +129,7 @@ public final class CustomResourcePackScreen extends PackScreen{
 	// Processing
 	
 	@Override
-	public void func_238899_a_(ResourcePackList list, Stream<IPack> packs){
+	public void func_238899_a_(@Nonnull ResourcePackList list, @Nonnull Stream<IPack> packs){
 		super.func_238899_a_(list, packs);
 		
 		if (originalAvailablePacks != null){
@@ -199,7 +200,7 @@ public final class CustomResourcePackScreen extends PackScreen{
 	}
 	
 	@Override
-	public void render(final MatrixStack matrix, final int mouseX, final int mouseY, final float partialTicks){
+	public void render(final @Nonnull MatrixStack matrix, final int mouseX, final int mouseY, final float partialTicks){
 		renderDirtBackground(0);
 		
 		field_238892_v_.render(matrix, mouseX, mouseY, partialTicks);
