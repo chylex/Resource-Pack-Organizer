@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[31,)"
 
 authors = "chylex"
+license = "MPL-2.0"
 displayURL = "https://respacks.chylex.com"
 issueTrackerURL = "https://github.com/chylex/Resource-Pack-Organizer/issues"
 

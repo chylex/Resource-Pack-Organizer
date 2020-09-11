@@ -2,7 +2,7 @@ package chylex.respack;
 import chylex.respack.gui.CustomResourcePackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.OptionsScreen;
-import net.minecraft.client.gui.screen.ResourcePacksScreen;
+import net.minecraft.client.gui.screen.PackScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.GuiOpenEvent;
@@ -17,8 +17,8 @@ public final class EventHandler{
 		final Minecraft mc = Minecraft.getInstance();
 		final Screen gui = e.getGui();
 		
-		if (gui != null && gui.getClass() == ResourcePacksScreen.class && mc.currentScreen instanceof OptionsScreen && !Screen.hasAltDown()){
-			e.setGui(new CustomResourcePackScreen((ResourcePacksScreen)gui));
+		if (gui != null && gui.getClass() == PackScreen.class && mc.currentScreen instanceof OptionsScreen && !Screen.hasAltDown()){
+			e.setGui(new CustomResourcePackScreen((PackScreen)gui));
 		}
 	}
 }

@@ -1,25 +1,19 @@
 package chylex.respack.packs;
 import net.minecraft.client.gui.screen.PackLoadingManager.IPack;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.ClientResourcePackInfo;
 import net.minecraft.resources.IPackNameDecorator;
 import net.minecraft.resources.PackCompatibility;
+import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public final class ResourcePackFolder extends ClientResourcePackInfo{
+public final class ResourcePackFolder extends ResourcePackInfo{
 	private static final ResourceLocation folderResource = new ResourceLocation("resourcepackorganizer:textures/gui/folder.png"); // http://www.iconspedia.com/icon/folion-icon-27237.html
 	
 	public ResourcePackFolder(final String name, final ITextComponent title, final ITextComponent description){
-		super(name, true, () -> null, title, description, PackCompatibility.COMPATIBLE, Priority.TOP, true, IPackNameDecorator.field_232625_a_, null, false);
-	}
-	
-	@Override
-	public void func_195808_a(final TextureManager textureManager){
-		textureManager.bindTexture(folderResource);
+		super(name, true, () -> null, title, description, PackCompatibility.COMPATIBLE, Priority.TOP, true, IPackNameDecorator.field_232625_a_, false);
 	}
 	
 	static class PackEntry implements IPack{
@@ -29,10 +23,9 @@ public final class ResourcePackFolder extends ClientResourcePackInfo{
 			this.pack = pack;
 		}
 		
-		
 		@Override
-		public void func_230461_a_(final TextureManager textureManager){
-			pack.func_195808_a(textureManager);
+		public ResourceLocation func_241868_a(){
+			return folderResource;
 		}
 		
 		@Override

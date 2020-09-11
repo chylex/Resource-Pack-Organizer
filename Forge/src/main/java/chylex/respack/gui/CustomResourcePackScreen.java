@@ -8,8 +8,6 @@ import net.minecraft.client.gui.screen.PackLoadingManager;
 import net.minecraft.client.gui.screen.PackLoadingManager.AbstractPack;
 import net.minecraft.client.gui.screen.PackLoadingManager.IPack;
 import net.minecraft.client.gui.screen.PackScreen;
-import net.minecraft.client.gui.screen.ResourcePacksScreen;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
@@ -25,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.stream.Stream;
 import static chylex.respack.repository.ResourcePackUtils.wrap;
 
 @OnlyIn(Dist.CLIENT)
@@ -35,24 +33,6 @@ public final class CustomResourcePackScreen extends PackScreen{
 	private static final ITextComponent TEXT_FOLDER_VIEW = new StringTextComponent("Folder View");
 	private static final ITextComponent TEXT_FLAT_VIEW = new StringTextComponent("Flat View");
 	private static final ITextComponent TEXT_REFRESH = new StringTextComponent("Refresh");
-	
-	private static Function<Runnable, PackLoadingManager<?>> patchPackLoadingManager(final ResourcePacksScreen original){
-		return runnable -> {
-			final PackLoadingManager<?> manager = original.field_238887_q_;
-			
-			manager.field_238863_d_ = () -> {
-				runnable.run();
-				
-				final Screen screen = Minecraft.getInstance().currentScreen;
-				
-				if (screen instanceof CustomResourcePackScreen){
-					((CustomResourcePackScreen)screen).onFiltersUpdated();
-				}
-			};
-			
-			return manager;
-		};
-	}
 	
 	// Instance
 	
@@ -66,8 +46,16 @@ public final class CustomResourcePackScreen extends PackScreen{
 	private File currentFolder = Minecraft.getInstance().getFileResourcePacks();
 	private boolean folderView = true;
 	
-	public CustomResourcePackScreen(final ResourcePacksScreen original){
-		super(original.field_238888_r_, (TranslationTextComponent)original.getTitle(), patchPackLoadingManager(original), original.field_241817_w_);
+	public CustomResourcePackScreen(final PackScreen original){
+		super(original.field_238888_r_, original.field_238887_q_.field_241617_a_, original.field_238887_q_.field_238864_e_, original.field_241817_w_, original.getTitle());
+		
+		final PackLoadingManager manager = original.field_238887_q_;
+		final Runnable originalFunc = manager.field_238863_d_;
+		
+		manager.field_238863_d_ = () -> {
+			originalFunc.run();
+			onFiltersUpdated();
+		};
 	}
 	
 	// Components
@@ -138,6 +126,15 @@ public final class CustomResourcePackScreen extends PackScreen{
 	}
 	
 	// Processing
+	
+	@Override
+	public void func_238899_a_(ResourcePackList list, Stream<IPack> packs){
+		super.func_238899_a_(list, packs);
+		
+		if (originalAvailablePacks != null){
+			onFiltersUpdated();
+		}
+	}
 	
 	private boolean notInRoot(){
 		return folderView && !currentFolder.equals(getMinecraft().getFileResourcePacks());

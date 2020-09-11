@@ -28,7 +28,7 @@ public final class NestedFolderPackFinder implements IPackFinder{
 	}
 	
 	@Override
-	public <T extends ResourcePackInfo> void func_230230_a_(final Consumer<T> packInfoConsumer, final IFactory<T> packInfoFactory){
+	public void func_230230_a_(final Consumer<ResourcePackInfo> packInfoConsumer, final IFactory packInfoFactory){
 		final File[] folders = root.listFiles(ResourcePackUtils::isFolderButNotFolderBasedPack);
 		
 		for(final File folder : wrap(folders)){
@@ -36,7 +36,7 @@ public final class NestedFolderPackFinder implements IPackFinder{
 		}
 	}
 	
-	private <T extends ResourcePackInfo> void processFolder(final File folder, final Consumer<T> packInfoConsumer, final IFactory<T> packInfoFactory){
+	private <T extends ResourcePackInfo> void processFolder(final File folder, final Consumer<ResourcePackInfo> packInfoConsumer, final IFactory packInfoFactory){
 		if (isFolderBasedPack(folder)){
 			addPack(folder, packInfoConsumer, packInfoFactory);
 			return;
@@ -55,9 +55,9 @@ public final class NestedFolderPackFinder implements IPackFinder{
 		}
 	}
 	
-	private <T extends ResourcePackInfo> void addPack(final File fileOrFolder, final Consumer<T> packInfoConsumer, final IFactory<T> packInfoFactory){
+	private void addPack(final File fileOrFolder, final Consumer<ResourcePackInfo> packInfoConsumer, final IFactory packInfoFactory){
 		final String name = "file/" + StringUtils.removeStart(fileOrFolder.getAbsolutePath().substring(rootLength).replace('\\', '/'), "/");
-		final T info;
+		final ResourcePackInfo info;
 		
 		if (fileOrFolder.isDirectory()){
 			info = ResourcePackInfo.createResourcePack(name, false, () -> new FolderPack(fileOrFolder), packInfoFactory, Priority.TOP, IPackNameDecorator.field_232625_a_);
